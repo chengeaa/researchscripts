@@ -1,8 +1,23 @@
 #!/usr/bin/env python
+''' SHORT DESCRIPTION OF WHAT THIS DOES
+
+LONGER DESCRIPTION OF WHAT THIS DOES
+
+Args:
+    POSCAR - filepath for POSCAR file
+
+Returns:
+    None; writes results to "{POSCAR_FILEPATH}.out" based on the POSCAR filepath provided as an argument.
+
+'''
+
+
+
 import re
 import os
 import sys
 import numpy as np
+import argparse
 
 
 def main(filename):
@@ -61,11 +76,8 @@ def main(filename):
 
 
 if __name__ == "__main__":
-    """
-    Arg 1: POSCAR
-    """
-    args = sys.argv[1:]
-    if len(args) > 1:
-        print(args)
-        raise Exception("Too many args")
+    parser = argparse.ArgumentParser(description="DESCRIPTION OF THIS SCRIPT")
+    parser.add_argument('POSCAR', help='filepath of POSCAR input file', type=str)
+
+    args = parser.parse_args()
     main(*args)
