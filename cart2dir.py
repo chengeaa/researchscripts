@@ -11,14 +11,11 @@ Returns:
 
 '''
 
-
-
 import re
 import os
 import sys
 import numpy as np
 import argparse
-
 
 def main(filename):
     with open(filename, 'r') as infile:  # Use file to refer to the file object
