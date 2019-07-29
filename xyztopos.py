@@ -52,7 +52,7 @@ def main(filename, source, x, y, z):
                         if count == 0:
                             new += "   F" * 3
                         else:
-                            new += "   F" * 3
+                            new += "   T" * 3
                         outfile.write(new)
                         newline()
                         count += 1
