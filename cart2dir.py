@@ -70,10 +70,11 @@ def main(filename):
                         newline()
                     except:
                         outfile.write(line)
-
-
+    with open(filename + ".out", 'r') as f:
+        for i in f:
+            print(i)
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Performs some kind of parsing on POSCAR file(?)")
     parser.add_argument('POSCAR', help='filepath of POSCAR input file', type=str)
     args = parser.parse_args()
-    main(*args)
+    main(*vars(args))
