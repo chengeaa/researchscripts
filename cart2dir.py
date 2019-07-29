@@ -22,7 +22,7 @@ import argparse
 def main(filename):
     with open(filename, 'r') as infile:  # Use file to refer to the file object
         with open(filename + ".out", 'w') as outfile:
-
+            print("filename is ", filename)
             def tab():
                 outfile.write(" "*4)
             def newline():
@@ -72,9 +72,9 @@ def main(filename):
                         outfile.write(line)
     with open(filename + ".out", 'r') as f:
         for i in f:
-            print(i)
+            pass
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Performs some kind of parsing on POSCAR file(?)")
-    parser.add_argument('POSCAR', help='filepath of POSCAR input file', type=str)
+    parser.add_argument('filename', help='filepath of POSCAR input file', type=str)
     args = parser.parse_args()
-    main(*vars(args))
+    main(*vars(args).values())
