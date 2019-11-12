@@ -14,12 +14,12 @@ def main(filename, source, x, y, z):
                     outfile.write(" "*n)
                 def newline():
                     outfile.write("\n")
-                # def prettify(string):
-                #     return ("%7f" % float(string)).ljust(18, '0')
                 def prettify(string):
                     return "{: .16g}".format(float(string)).ljust(18, '0')
                 
                 mults = np.array([x,y,z], dtype = float)
+                atoms = {}
+                elements = []
 
                 for i, line in enumerate(origin):
                     tokens = line.split()
@@ -36,6 +36,9 @@ def main(filename, source, x, y, z):
                         newline()
                     if i == 5: #don't touch atom labels
                         outfile.write(line)
+                        elements = tokens
+                        for label in tokens:
+                            atoms[label] = []
                     if i == 6: #multiply atom numbers
                         tab()                   
                         outfile.write(" ".join([str(int(i)) for i in tokens * np.prod(mults)]))
@@ -45,20 +48,31 @@ def main(filename, source, x, y, z):
                 outfile.write("Cartesian") #xyz file doesn't do fractional
                 newline()
                 count = 0
+                print(elements)
+
+                #################################
+                ### Read data into atoms dict ###
+                #################################
+
                 for i, line in enumerate(infile):
                     tokens = line.split()
+                    atom, data = tokens[0], tokens[1:]
                     if i > 1: #don't need to care about first two lines now
-                        new = "  " + " ".join([prettify(i) for i in tokens[1:]])
-                        if count == 0:
-                            new += "   F" * 3
-                        else:
-                            new += "   T" * 3
-                        outfile.write(new)
-                        newline()
-                        count += 1
+                        atoms[atom] += [data]
                     else:
                         continue
+
+                ##########################
+                ### Write out elements ###
+                ##########################
+
+                for element in elements:
+                    for atom in atoms[element]:
+                        outfile.write(" ".join(atom))
+                        newline()
+                        
                 newline()
+                
                 for i in range(count):
                     outfile.write("  " + (("%4e" % float("0")) + " ") * 3)
                     newline()
