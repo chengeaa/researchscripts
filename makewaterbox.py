@@ -33,19 +33,19 @@ def main(n, num_per_layer, correction = 0):
     vacuum_height = 1 - (upperlim - lowerlim)
 
     #set spacings
-    aspace = vacuum_height/(n / num_per_layer) #assume even n and 2 waters per layer
-    bspace = 1/2 
-    cspace = 1/4 
+    a_space = vacuum_height/(n / num_per_layer) #assume even n and 2 waters per layer
+    b_space = 1/2 
+    c_space = 1/4 
 
-    for i in np.arange(int(1/aspace) + correction):
+    for i in np.arange(int(1/a_space) + correction):
         for j in np.arange(num_per_layer):
             #offsets a and c locations in step, b location within the layer
-            if i * aspace < lowerlim or i * aspace > upperlim:
-                O_output = np.append(O_output, np.array(initial_O + np.array([i * aspace, j * bspace + i*cspace, i*cspace])))
+            if i * a_space < lowerlim or i * a_space > upperlim:
+                O_output = np.append(O_output, np.array(initial_O + np.array([i * a_space, j * b_space + i*c_space, i*c_space])))
                 O_output = np.append(O_output, np.array(["  T"]*3 ))
-                H_output = np.append(H_output, np.array(initial_H1 + np.array([i * aspace, j * bspace+ i*cspace, i*cspace])))
+                H_output = np.append(H_output, np.array(initial_H1 + np.array([i * a_space, j * b_space+ i*c_space, i*c_space])))
                 H_output = np.append(H_output, np.array(["  T"]*3 ))
-                H_output = np.append(H_output, np.array(initial_H2 + np.array([i * aspace, j * bspace+ i*cspace, i*cspace])))
+                H_output = np.append(H_output, np.array(initial_H2 + np.array([i * a_space, j * b_space+ i*c_space, i*c_space])))
                 H_output = np.append(H_output, np.array(["  T"]*3 ))
     O_output = O_output.reshape(-1, 6)
     H_output = H_output.reshape(-1, 6)
