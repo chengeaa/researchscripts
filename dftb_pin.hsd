@@ -1,0 +1,82 @@
+Geometry = GenFormat {
+2  C
+H    Ar
+1      1      0.000000000000000      0.000000000000000      0.000000000000000
+2      2      0.000000000000000      0.000000000000000      4.000000000000000
+}
+Driver = ConjugateGradient {
+  MaxForceComponent = 1E10
+  MaxSteps = 0
+  LatticeOpt = No
+  MovedAtoms = "1:-1"
+  MaxAtomStep = 0.20000000000000001
+  OutputPrefix = "geo_end"
+  AppendGeometries = No
+  ConvergentForcesOnly = Yes
+  Constraints = {}
+}
+Hamiltonian = DFTB {
+  MaxAngularMomentum = {
+    Ar = "p"
+    H = "s"
+  }
+  PolynomialRepulsive = {
+    H-H = No
+    H-Ar = No
+    Ar-H = No
+    Ar-Ar = No
+  }
+  SlaterKosterFiles = Type2FileNames {
+    Prefix = /home/erik/Desktop/researchtemp/dftb/pbc-0-3/
+    Separator = "-"
+    Suffix = ".skf"
+    LowerCaseTypeName = No
+  }
+  ShellResolvedSCC = No
+  OldSKInterpolation = No
+  RangeSeparated = None {}
+  SCC = No
+  SpinPolarisation = {}
+  ElectricField = {}
+  Filling = Fermi {
+    Temperature = 0.0000000000000000
+  }
+  Solver = RelativelyRobust {}
+  Charge = 0.0000000000000000
+  OnSiteCorrection = {}
+  Dispersion = {}
+  Electrostatics = GammaFunctional {}
+  Differentiation = FiniteDiff {
+    Delta = 1.2207031250000000E-004
+  }
+}
+Options = {
+  WriteResultsTag = Yes
+  WriteDetailedOut = Yes
+  WriteAutotestTag = No
+  WriteDetailedXML = No
+  RandomSeed = 0
+  WriteHS = No
+  WriteRealHS = No
+  MinimiseMemoryUsage = No
+  ShowFoldedCoords = No
+  TimingVerbosity = 1
+  WriteChargesAsText = No
+}
+ParserOptions = {
+  IgnoreUnprocessedNodes = Yes
+  ParserVersion = 7
+  WriteHSDInput = Yes
+  WriteXMLInput = No
+  StopAfterParsing = No
+}
+Analysis = {
+  ProjectStates = {}
+  WriteEigenvectors = No
+  WriteBandOut = Yes
+  MullikenAnalysis = Yes
+  AtomResolvedEnergies = No
+  CalculateForces = No
+  EigenvectorsAsTxt = No
+}
+ExcitedState = {}

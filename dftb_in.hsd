@@ -1,0 +1,30 @@
+Geometry = GenFormat { 
+    <<< "geo_end.gen" 
+} 
+ 
+Driver = ConjugateGradient{ 
+   KeepStationary = No 
+   MaxForceComponent = 1E10 
+   MaxSteps = 0 
+   } 
+Hamiltonian = DFTB{ 
+   MaxAngularMomentum = { 
+      Ar = "p" 
+      C = "p" 
+      H = "s" 
+      N = "p" 
+      Si = "p" 
+   } 
+   PolynomialRepulsive = {Si-Ar=Yes, Ar-Si=Yes} 
+   SlaterKosterFiles = Type2FileNames{ 
+      Prefix = /home/erik/Desktop/researchtemp/dftb/pbc-0-3/ 
+      Separator = "-" 
+      Suffix = ".skf" 
+      } 
+   } 
+Options { 
+   WriteResultsTag = Yes 
+} 
+ParserOptions { 
+   IgnoreUnprocessedNodes = Yes  
+} 

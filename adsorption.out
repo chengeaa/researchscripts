@@ -1,0 +1,223 @@
+|===============================================================================
+|
+|  DFTB+ release 19.1
+|
+|  Copyright (C) 2006 - 2019  DFTB+ developers group
+|
+|===============================================================================
+|
+|  When publishing results obtained with DFTB+, please cite the following
+|  reference:
+|
+|  * B. Aradi, B. Hourahine and T. Frauenheim,
+|    DFTB+, a Sparse Matrix-Based Implementation of the DFTB Method,
+|    J. Phys. Chem. A, 111 5678 (2007).  [doi: 10.1021/jp070186p]
+|
+|  You should also cite additional publications crediting the parametrization
+|  data you use. Please consult the documentation of the SK-files for the
+|  references.
+|
+|===============================================================================
+
+Reading input file 'dftb_in.hsd'
+Parser version: 7
+
+--------------------------------------------------------------------------------
+Reading SK-files:
+Done.
+WARNING!
+-> The following 2 node(s) have been ignored by the parser:
+(1)
+Path: dftbplusinput/Driver/ConjugateGradient/KeepStationary
+Line: 7-7 (File: dftb_in.hsd)
+(2)
+Path: dftbplusinput/Driver/ConjugateGradient/SCC
+Line: 10-10 (File: dftb_in.hsd)
+
+
+
+Processed input in HSD format written to 'dftb_pin.hsd'
+
+Starting initialization...
+--------------------------------------------------------------------------------
+OpenMP threads:              8
+Chosen random seed:          59506120
+Mode:                        Conjugate gradient relaxation
+Self consistent charges:     No
+Spin polarisation:           No
+Nr. of up electrons:           588.000000
+Nr. of down electrons:         588.000000
+Periodic boundaries:         Yes
+Electronic solver:           Relatively robust
+Nr. of moved atoms:                     142
+Max. nr. of geometry steps:              10
+Force tolerance:               0.100000E-03
+Electronic temperature:        0.100000E-07 H      0.272114E-06 eV
+Included shells:             H:  s
+                             N:  s, p
+                            Si:  s, p
+                             C:  s, p
+                             F:  s, p
+K-points and weights:           1:  0.000000  0.000000  0.000000     1.000000
+
+K-points in absolute space:     1:  0.000000  0.000000  0.000000
+
+Extra options:
+                             Mulliken analysis
+Force type                   original
+
+--------------------------------------------------------------------------------
+
+***  Geometry step: 0
+
+
+Total Energy:                     -513.2656505075 H       -13966.6690 eV
+Extrapolated to 0:                -513.2656505075 H       -13966.6690 eV
+Total Mermin free energy:         -513.2656505075 H       -13966.6690 eV
+Force related energy:             -513.2656505075 H       -13966.6690 eV
+Volume:                              0.417918E+05 au^3   0.619291E+04 A^3
+Pressure:                            0.664075E-04 au     0.195378E+10 Pa
+Maximal force component:             0.382908E-01
+
+--------------------------------------------------------------------------------
+
+***  Geometry step: 1
+
+
+Total Energy:                     -513.2544527049 H       -13966.3643 eV
+Extrapolated to 0:                -513.2544527049 H       -13966.3643 eV
+Total Mermin free energy:         -513.2544527049 H       -13966.3643 eV
+Force related energy:             -513.2544527049 H       -13966.3643 eV
+Volume:                              0.417918E+05 au^3   0.619291E+04 A^3
+Pressure:                            0.555547E-04 au     0.163448E+10 Pa
+Maximal force component:             0.469739E-01
+
+--------------------------------------------------------------------------------
+
+***  Geometry step: 2
+
+
+Total Energy:                     -513.2754134868 H       -13966.9346 eV
+Extrapolated to 0:                -513.2754134868 H       -13966.9346 eV
+Total Mermin free energy:         -513.2754134868 H       -13966.9346 eV
+Force related energy:             -513.2754134868 H       -13966.9346 eV
+Volume:                              0.417918E+05 au^3   0.619291E+04 A^3
+Pressure:                            0.610026E-04 au     0.179476E+10 Pa
+Maximal force component:             0.967142E-02
+
+--------------------------------------------------------------------------------
+
+***  Geometry step: 3
+
+
+Total Energy:                     -513.2773195084 H       -13966.9865 eV
+Extrapolated to 0:                -513.2773195084 H       -13966.9865 eV
+Total Mermin free energy:         -513.2773195084 H       -13966.9865 eV
+Force related energy:             -513.2773195084 H       -13966.9865 eV
+Volume:                              0.417918E+05 au^3   0.619291E+04 A^3
+Pressure:                            0.609446E-04 au     0.179305E+10 Pa
+Maximal force component:             0.154751E-01
+
+--------------------------------------------------------------------------------
+
+***  Geometry step: 4
+
+
+Total Energy:                     -513.2780768748 H       -13967.0071 eV
+Extrapolated to 0:                -513.2780768748 H       -13967.0071 eV
+Total Mermin free energy:         -513.2780768748 H       -13967.0071 eV
+Force related energy:             -513.2780768748 H       -13967.0071 eV
+Volume:                              0.417918E+05 au^3   0.619291E+04 A^3
+Pressure:                            0.608950E-04 au     0.179159E+10 Pa
+Maximal force component:             0.123906E-01
+
+--------------------------------------------------------------------------------
+
+***  Geometry step: 5
+
+
+Total Energy:                     -513.2808290664 H       -13967.0820 eV
+Extrapolated to 0:                -513.2808290664 H       -13967.0820 eV
+Total Mermin free energy:         -513.2808290664 H       -13967.0820 eV
+Force related energy:             -513.2808290664 H       -13967.0820 eV
+Volume:                              0.417918E+05 au^3   0.619291E+04 A^3
+Pressure:                            0.597626E-04 au     0.175828E+10 Pa
+Maximal force component:             0.543080E-02
+
+--------------------------------------------------------------------------------
+
+***  Geometry step: 6
+
+
+Total Energy:                     -513.2770499543 H       -13966.9792 eV
+Extrapolated to 0:                -513.2770499543 H       -13966.9792 eV
+Total Mermin free energy:         -513.2770499543 H       -13966.9792 eV
+Force related energy:             -513.2770499543 H       -13966.9792 eV
+Volume:                              0.417918E+05 au^3   0.619291E+04 A^3
+Pressure:                            0.581696E-04 au     0.171141E+10 Pa
+Maximal force component:             0.322916E-01
+
+--------------------------------------------------------------------------------
+
+***  Geometry step: 7
+
+
+Total Energy:                     -513.2809296920 H       -13967.0847 eV
+Extrapolated to 0:                -513.2809296920 H       -13967.0847 eV
+Total Mermin free energy:         -513.2809296920 H       -13967.0847 eV
+Force related energy:             -513.2809296920 H       -13967.0847 eV
+Volume:                              0.417918E+05 au^3   0.619291E+04 A^3
+Pressure:                            0.595313E-04 au     0.175147E+10 Pa
+Maximal force component:             0.875492E-02
+
+--------------------------------------------------------------------------------
+
+***  Geometry step: 8
+
+
+Total Energy:                     -513.2832557853 H       -13967.1480 eV
+Extrapolated to 0:                -513.2832557853 H       -13967.1480 eV
+Total Mermin free energy:         -513.2832557853 H       -13967.1480 eV
+Force related energy:             -513.2832557853 H       -13967.1480 eV
+Volume:                              0.417918E+05 au^3   0.619291E+04 A^3
+Pressure:                            0.561632E-04 au     0.165238E+10 Pa
+Maximal force component:             0.984681E-02
+
+--------------------------------------------------------------------------------
+
+***  Geometry step: 9
+
+
+Total Energy:                     -513.2808329796 H       -13967.0821 eV
+Extrapolated to 0:                -513.2808329796 H       -13967.0821 eV
+Total Mermin free energy:         -513.2808329796 H       -13967.0821 eV
+Force related energy:             -513.2808329796 H       -13967.0821 eV
+Volume:                              0.417918E+05 au^3   0.619291E+04 A^3
+Pressure:                            0.511430E-04 au     0.150468E+10 Pa
+Maximal force component:             0.165039E-01
+
+--------------------------------------------------------------------------------
+
+***  Geometry step: 10
+
+
+Total Energy:                     -513.2833750070 H       -13967.1513 eV
+Extrapolated to 0:                -513.2833750070 H       -13967.1513 eV
+Total Mermin free energy:         -513.2833750070 H       -13967.1513 eV
+Force related energy:             -513.2833750070 H       -13967.1513 eV
+Volume:                              0.417918E+05 au^3   0.619291E+04 A^3
+Pressure:                            0.552317E-04 au     0.162497E+10 Pa
+Maximal force component:             0.101707E-01
+WARNING!
+-> !!! Geometry did NOT converge!
+
+--------------------------------------------------------------------------------
+DFTB+ running times                          cpu [s]             wall clock [s]
+--------------------------------------------------------------------------------
+Pre-SCC initialisation                 +     3.44  (  9.4%)      0.68  (  6.2%)
+SCC                                    +    19.83  ( 54.2%)      6.13  ( 55.5%)
+Post-SCC processing                    +    13.32  ( 36.4%)      4.22  ( 38.3%)
+--------------------------------------------------------------------------------
+Missing                                +     0.01  (  0.0%)      0.01  (  0.1%)
+Total                                  =    36.60  (100.0%)     11.04  (100.0%)
+--------------------------------------------------------------------------------

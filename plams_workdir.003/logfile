@@ -1,0 +1,13 @@
+[17:23:34] Running PLAMS located in /home/erik/miniconda3/lib/python3.7/site-packages/scm/plams
+[17:23:34] Using Python 3.7.7 located in /home/erik/miniconda3/bin/python
+[17:23:34] PLAMS defaults were loaded from /home/erik/miniconda3/lib/python3.7/site-packages/scm/plams/plams_defaults
+[17:23:34] PLAMS environment initialized
+[17:23:34] PLAMS working folder: /home/erik/Desktop/researchtemp/researchscripts/plams_workdir.003
+[17:23:34] JOB plamstest STARTED
+[17:23:34] Starting plamstest.prerun()
+[17:23:34] plamstest.prerun() finished
+[17:23:34] JOB plamstest RUNNING
+[17:23:34] Executing plamstest.run
+[17:23:34] Execution of plamstest.run finished with returncode 0
+[17:23:34] JOB plamstest FINISHED
+[17:23:34] JOB plamstest FAILED

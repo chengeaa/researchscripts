@@ -1,0 +1,70 @@
+|===============================================================================
+|
+|  DFTB+ release 19.1
+|
+|  Copyright (C) 2006 - 2019  DFTB+ developers group
+|
+|===============================================================================
+|
+|  When publishing results obtained with DFTB+, please cite the following
+|  reference:
+|
+|  * B. Aradi, B. Hourahine and T. Frauenheim,
+|    DFTB+, a Sparse Matrix-Based Implementation of the DFTB Method,
+|    J. Phys. Chem. A, 111 5678 (2007).  [doi: 10.1021/jp070186p]
+|
+|  You should also cite additional publications crediting the parametrization
+|  data you use. Please consult the documentation of the SK-files for the
+|  references.
+|
+|===============================================================================
+
+Reading input file 'dftb_in.hsd'
+Parser version: 7
+
+--------------------------------------------------------------------------------
+Reading SK-files:
+Done.
+WARNING!
+-> The following 4 node(s) have been ignored by the parser:
+(1)
+Path: dftbplusinput/Driver/ConjugateGradient/KeepStationary
+Line: 6-6 (File: dftb_in.hsd)
+(2)
+Path: dftbplusinput/Hamiltonian/DFTB/MaxAngularMomentum/Ar
+Line: 11-11 (File: dftb_in.hsd)
+(3)
+Path: dftbplusinput/Hamiltonian/DFTB/MaxAngularMomentum/C
+Line: 12-12 (File: dftb_in.hsd)
+(4)
+Path: dftbplusinput/Hamiltonian/DFTB/MaxAngularMomentum/Si
+Line: 15-15 (File: dftb_in.hsd)
+
+
+
+Processed input in HSD format written to 'dftb_pin.hsd'
+
+Starting initialization...
+--------------------------------------------------------------------------------
+OpenMP threads:              8
+Chosen random seed:          16690941
+Mode:                        Static calculation
+Self consistent charges:     No
+Spin polarisation:           No
+Nr. of up electrons:             4.000000
+Nr. of down electrons:           4.000000
+Periodic boundaries:         No
+Electronic solver:           Relatively robust
+Electronic temperature:        0.100000E-07 H      0.272114E-06 eV
+Included shells:             N:  s, p
+                             H:  s, p
+Extra options:
+                             Mulliken analysis
+Force type                   original
+
+--------------------------------------------------------------------------------
+
+***  Geometry step: 0
+
+ERROR!
+-> Failure in diagonalisation routine DSYGVR, unable to complete Cholesky factorization of B     29

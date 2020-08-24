@@ -1,0 +1,23 @@
+driver = ConjugateGradient {
+}
+geometry = GenFormat {
+   <<< plamstest.gen
+}
+hamiltonian = DFTB {
+  maxangularmomentum = {
+    f = "p"
+    h = "s"
+    si = "p"
+  }
+  polynomialrepulsive = {Si-Ar = Yes, Ar-Si=Yes}
+  scc = yes
+  slaterkosterfiles = Type2Filenames {
+    lowercasetypename = No
+    prefix = "/home/erik/Desktop/researchtemp/dftb/pbc-0-3/"
+    separator = "-"
+    suffix = .skf
+  }
+}
+parseroptions = {
+  parserversion = 4
+}
