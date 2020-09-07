@@ -23,7 +23,7 @@ from sklearn import preprocessing
 import matplotlib.tri as tri
 
 #ase
-from ase.io import gen, vasp, xyz, extxyz, dftb
+from ase.io import gen, vasp, xyz, extxyz, 
 from ase.io.dftb import read_dftb_velocities, write_dftb_velocities
 from ase.calculators.dftb import Dftb
 from ase import Atoms, Atom
@@ -38,8 +38,9 @@ from ase.geometry.analysis import Analysis
 
 
 def main(datadir = "temp/", #data files, structured as datadir/output$i-$j.gen and datadir/velos$i-$j
-    outputdir = "../temp.new/", #files for output
-    surftype = 'nh'):
+    outputdir = "/temp.new/", #files for output
+    surftype = 'nh' #type of surface as corresponding to keys in surfzmaxes
+    ):
 
     surfzmaxes = {'nrichhterm': 14.405, 'sirichfterm': 13.229} #xtl reference slab zmax
     surfabbr = {'nh':'nrichhterm', 'sf': 'sirichfterm'}
@@ -47,8 +48,6 @@ def main(datadir = "temp/", #data files, structured as datadir/output$i-$j.gen a
     xtlzmax = surfzmaxes[surftype] 
     zcutoff = xtlzmax + 4 # approximating H bonding range as 4 AA
     zmincutoff = 0.1 #somewhat arbitrary value to get rid of atoms that have gone into bulk
-
-    numsims = 170 # number of simulations per batch
 
     ##############################
     ### Read in geometry files ###
@@ -120,6 +119,7 @@ def main(datadir = "temp/", #data files, structured as datadir/output$i-$j.gen a
     # collect all removed species series into a df and write as csv
     pd.DataFrame(removedspecies).to_csv("removedspecies.csv")
 
+    #write 
     for key, geom in trimmedgeoms.items():
         gen.write_gen("%sinput%s.gen" % (outputdir, key), 
             geom)

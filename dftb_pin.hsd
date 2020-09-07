@@ -1,8 +1,8 @@
 Geometry = GenFormat {
 2  C
-H    Ar
-1      1      0.000000000000000      0.000000000000000      0.000000000000000
-2      2      0.000000000000000      0.000000000000000      4.000000000000000
+Ar  O
+1 1    0.0000000000E+00    0.0000000000E+00    0.0000000000E+00
+2 2    0.0000000000E+00    0.0000000000E+00    0.4000000000E+01
 }
 Driver = ConjugateGradient {
   MaxForceComponent = 1E10
@@ -18,13 +18,10 @@ Driver = ConjugateGradient {
 Hamiltonian = DFTB {
   MaxAngularMomentum = {
     Ar = "p"
-    H = "s"
+    O = "p"
   }
-  PolynomialRepulsive = {
-    H-H = No
-    H-Ar = No
-    Ar-H = No
-    Ar-Ar = No
+  PolynomialRepulsive = SetForAll {
+Yes
   }
   SlaterKosterFiles = Type2FileNames {
     Prefix = /home/erik/Desktop/researchtemp/dftb/pbc-0-3/

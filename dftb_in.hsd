@@ -6,6 +6,7 @@ Driver = ConjugateGradient{
    KeepStationary = No 
    MaxForceComponent = 1E10 
    MaxSteps = 0 
+   SCC = Yes 
    } 
 Hamiltonian = DFTB{ 
    MaxAngularMomentum = { 
@@ -13,9 +14,10 @@ Hamiltonian = DFTB{
       C = "p" 
       H = "s" 
       N = "p" 
+      O = "p" 
       Si = "p" 
    } 
-   PolynomialRepulsive = {Si-Ar=Yes, Ar-Si=Yes} 
+   PolynomialRepulsive = SetForAll{Yes} 
    SlaterKosterFiles = Type2FileNames{ 
       Prefix = /home/erik/Desktop/researchtemp/dftb/pbc-0-3/ 
       Separator = "-" 

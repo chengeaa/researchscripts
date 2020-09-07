@@ -1,0 +1,94 @@
+|===============================================================================
+|
+|  DFTB+ release 19.1
+|
+|  Copyright (C) 2006 - 2019  DFTB+ developers group
+|
+|===============================================================================
+|
+|  When publishing results obtained with DFTB+, please cite the following
+|  reference:
+|
+|  * B. Aradi, B. Hourahine and T. Frauenheim,
+|    DFTB+, a Sparse Matrix-Based Implementation of the DFTB Method,
+|    J. Phys. Chem. A, 111 5678 (2007).  [doi: 10.1021/jp070186p]
+|
+|  You should also cite additional publications crediting the parametrization
+|  data you use. Please consult the documentation of the SK-files for the
+|  references.
+|
+|===============================================================================
+
+Reading input file 'dftb_in.hsd'
+Parser version: 7
+
+--------------------------------------------------------------------------------
+Reading SK-files:
+Done.
+WARNING!
+-> The following 6 node(s) have been ignored by the parser:
+(1)
+Path: dftbplusinput/Driver/ConjugateGradient/KeepStationary
+Line: 6-6 (File: dftb_in.hsd)
+(2)
+Path: dftbplusinput/Driver/ConjugateGradient/SCC
+Line: 9-9 (File: dftb_in.hsd)
+(3)
+Path: dftbplusinput/Hamiltonian/DFTB/MaxAngularMomentum/C
+Line: 14-14 (File: dftb_in.hsd)
+(4)
+Path: dftbplusinput/Hamiltonian/DFTB/MaxAngularMomentum/H
+Line: 15-15 (File: dftb_in.hsd)
+(5)
+Path: dftbplusinput/Hamiltonian/DFTB/MaxAngularMomentum/N
+Line: 16-16 (File: dftb_in.hsd)
+(6)
+Path: dftbplusinput/Hamiltonian/DFTB/MaxAngularMomentum/Si
+Line: 18-18 (File: dftb_in.hsd)
+
+
+
+Processed input in HSD format written to 'dftb_pin.hsd'
+
+Starting initialization...
+--------------------------------------------------------------------------------
+OpenMP threads:              8
+Chosen random seed:          61146372
+Mode:                        Conjugate gradient relaxation
+Self consistent charges:     No
+Spin polarisation:           No
+Nr. of up electrons:             7.000000
+Nr. of down electrons:           7.000000
+Periodic boundaries:         No
+Electronic solver:           Relatively robust
+Nr. of moved atoms:                       2
+Max. nr. of geometry steps:               0
+Force tolerance:               0.100000E+11
+Electronic temperature:        0.100000E-07 H      0.272114E-06 eV
+Included shells:            Ar:  s, p
+                             O:  s, p
+Extra options:
+                             Mulliken analysis
+Force type                   original
+
+--------------------------------------------------------------------------------
+
+***  Geometry step: 0
+
+
+Total Energy:                       -7.1227057455 H         -193.8187 eV
+Extrapolated to 0:                  -7.1227057455 H         -193.8187 eV
+Total Mermin free energy:           -7.1227057455 H         -193.8187 eV
+Force related energy:               -7.1227057455 H         -193.8187 eV
+Maximal force component:             0.415283E-04
+
+Geometry converged
+
+--------------------------------------------------------------------------------
+DFTB+ running times                          cpu [s]             wall clock [s]
+--------------------------------------------------------------------------------
+SCC                                    +     0.06  ( 98.5%)      0.01  ( 90.0%)
+--------------------------------------------------------------------------------
+Missing                                +     0.00  (  1.5%)      0.00  ( 10.0%)
+Total                                  =     0.07  (100.0%)      0.01  (100.0%)
+--------------------------------------------------------------------------------

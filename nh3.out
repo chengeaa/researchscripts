@@ -26,22 +26,19 @@ Parser version: 7
 Reading SK-files:
 Done.
 WARNING!
--> The following 5 node(s) have been ignored by the parser:
+-> The following 4 node(s) have been ignored by the parser:
 (1)
 Path: dftbplusinput/Driver/ConjugateGradient/KeepStationary
 Line: 6-6 (File: dftb_in.hsd)
 (2)
-Path: dftbplusinput/Hamiltonian/DFTB/MaxAngularMomentum/C
-Line: 13-13 (File: dftb_in.hsd)
+Path: dftbplusinput/Hamiltonian/DFTB/MaxAngularMomentum/H
+Line: 14-14 (File: dftb_in.hsd)
 (3)
 Path: dftbplusinput/Hamiltonian/DFTB/MaxAngularMomentum/N
 Line: 15-15 (File: dftb_in.hsd)
 (4)
 Path: dftbplusinput/Hamiltonian/DFTB/MaxAngularMomentum/Si
 Line: 16-16 (File: dftb_in.hsd)
-(5)
-Path: dftbplusinput/Hamiltonian/DFTB/PolynomialRepulsive/Si-Ar
-Line: 18-18 (File: dftb_in.hsd)
 
 
 
@@ -50,19 +47,19 @@ Processed input in HSD format written to 'dftb_pin.hsd'
 Starting initialization...
 --------------------------------------------------------------------------------
 OpenMP threads:              8
-Chosen random seed:          20039871
+Chosen random seed:          57982153
 Mode:                        Conjugate gradient relaxation
 Self consistent charges:     No
 Spin polarisation:           No
-Nr. of up electrons:             4.500000
-Nr. of down electrons:           4.500000
+Nr. of up electrons:             6.000000
+Nr. of down electrons:           6.000000
 Periodic boundaries:         No
 Electronic solver:           Relatively robust
 Nr. of moved atoms:                       2
 Max. nr. of geometry steps:               0
 Force tolerance:               0.100000E+11
 Electronic temperature:        0.100000E-07 H      0.272114E-06 eV
-Included shells:             H:  s
+Included shells:             C:  s, p
                             Ar:  s, p
 Extra options:
                              Mulliken analysis
@@ -73,19 +70,19 @@ Force type                   original
 ***  Geometry step: 0
 
 
-Total Energy:                       -4.2751044299 H         -116.3315 eV
-Extrapolated to 0:                  -4.2751044368 H         -116.3315 eV
-Total Mermin free energy:           -4.2751044437 H         -116.3315 eV
-Force related energy:               -4.2751044437 H         -116.3315 eV
-Maximal force component:             0.510311E-05
+Total Energy:                       -5.4350068894 H         -147.8941 eV
+Extrapolated to 0:                  -5.4350069033 H         -147.8941 eV
+Total Mermin free energy:           -5.4350069172 H         -147.8941 eV
+Force related energy:               -5.4350069172 H         -147.8941 eV
+Maximal force component:             0.345525E-04
 
 Geometry converged
 
 --------------------------------------------------------------------------------
 DFTB+ running times                          cpu [s]             wall clock [s]
 --------------------------------------------------------------------------------
-SCC                                    +     0.10  ( 96.7%)      0.01  ( 87.5%)
+SCC                                    +     0.08  ( 95.2%)      0.01  ( 92.3%)
 --------------------------------------------------------------------------------
-Missing                                +     0.00  (  3.3%)      0.00  ( 12.5%)
-Total                                  =     0.10  (100.0%)      0.02  (100.0%)
+Missing                                +     0.00  (  4.8%)      0.00  (  7.7%)
+Total                                  =     0.09  (100.0%)      0.01  (100.0%)
 --------------------------------------------------------------------------------
