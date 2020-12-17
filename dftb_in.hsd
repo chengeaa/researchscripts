@@ -6,12 +6,12 @@ Driver = ConjugateGradient{
    KeepStationary = No 
    MaxForceComponent = 1E10 
    MaxSteps = 0 
-   SCC = Yes 
    } 
 Hamiltonian = DFTB{ 
    MaxAngularMomentum = { 
       Ar = "p" 
       C = "p" 
+      F = "p" 
       H = "s" 
       N = "p" 
       O = "p" 

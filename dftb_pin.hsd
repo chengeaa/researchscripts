@@ -1,8 +1,8 @@
 Geometry = GenFormat {
 2  C
-Ar  O
-1 1    0.0000000000E+00    0.0000000000E+00    0.0000000000E+00
-2 2    0.0000000000E+00    0.0000000000E+00    0.4000000000E+01
+Ar   C
+1      1      0.000000000000000      0.000000000000000      0.000000000000000
+2      2      0.000000000000000      0.000000000000000      4.000000000000000
 }
 Driver = ConjugateGradient {
   MaxForceComponent = 1E10
@@ -18,7 +18,7 @@ Driver = ConjugateGradient {
 Hamiltonian = DFTB {
   MaxAngularMomentum = {
     Ar = "p"
-    O = "p"
+    C = "p"
   }
   PolynomialRepulsive = SetForAll {
 Yes

@@ -5,58 +5,58 @@ Coordinates of moved atoms (au):
     1      0.00000000      0.00000000      0.00000000
     2      0.00000000      0.00000000      7.55890395
 
- Total charge:     0.00000000
+ Total charge:    -0.00000000
 
  Atomic gross charges (e)
  Atom           Charge
-    1       0.00026674
-    2      -0.00026674
+    1       0.00007528
+    2      -0.00007528
 
-Nr. of electrons (up):     14.00000000
+Nr. of electrons (up):     12.00000000
 Atom populations (up)
  Atom       Population
-    1       7.99973326
-    2       6.00026674
+    1       7.99992472
+    2       4.00007528
 
 l-shell populations (up)
  Atom Sh.   l       Population
-    1   1   0       1.99999988
-    1   2   1       5.99973338
+    1   1   0       1.99999958
+    1   2   1       5.99992514
     2   1   0       2.00000000
-    2   2   1       4.00026674
+    2   2   1       2.00007528
 
 Orbital populations (up)
  Atom Sh.   l   m       Population  Label
-    1   1   0   0       1.99999988  s
-    1   2   1  -1       2.00000000  p_y
-    1   2   1   0       1.99973338  p_z
-    1   2   1   1       2.00000000  p_x
+    1   1   0   0       1.99999958  s
+    1   2   1  -1       1.99999979  p_y
+    1   2   1   0       1.99992557  p_z
+    1   2   1   1       1.99999979  p_x
     2   1   0   0       2.00000000  s
-    2   2   1  -1       2.00000000  p_y
-    2   2   1   0       0.00026674  p_z
-    2   2   1   1       2.00000000  p_x
+    2   2   1  -1       1.00000022  p_y
+    2   2   1   0       0.00007485  p_z
+    2   2   1   1       1.00000021  p_x
 
-Fermi level:                        -0.3321284544 H           -9.0377 eV
-Band energy:                        -7.1227057455 H         -193.8187 eV
-TS:                                  0.0000000000 H            0.0000 eV
-Band free energy (E-TS):            -7.1227057455 H         -193.8187 eV
-Extrapolated E(0K):                 -7.1227057455 H         -193.8187 eV
-Input / Output electrons (q):      0.0000000000     14.0000000000
+Fermi level:                        -0.1943550644 H           -5.2887 eV
+Band energy:                        -5.4350068894 H         -147.8941 eV
+TS:                                  0.0000000277 H            0.0000 eV
+Band free energy (E-TS):            -5.4350069172 H         -147.8941 eV
+Extrapolated E(0K):                 -5.4350069033 H         -147.8941 eV
+Input / Output electrons (q):      0.0000000000     12.0000000014
 
-Energy H0:                          -7.1227057455 H         -193.8187 eV
-Total Electronic energy:            -7.1227057455 H         -193.8187 eV
+Energy H0:                          -5.4350068894 H         -147.8941 eV
+Total Electronic energy:            -5.4350068894 H         -147.8941 eV
 Repulsive energy:                    0.0000000000 H            0.0000 eV
-Total energy:                       -7.1227057455 H         -193.8187 eV
-Extrapolated to 0:                  -7.1227057455 H         -193.8187 eV
-Total Mermin free energy:           -7.1227057455 H         -193.8187 eV
-Force related energy:               -7.1227057455 H         -193.8187 eV
+Total energy:                       -5.4350068894 H         -147.8941 eV
+Extrapolated to 0:                  -5.4350069033 H         -147.8941 eV
+Total Mermin free energy:           -5.4350069172 H         -147.8941 eV
+Force related energy:               -5.4350069172 H         -147.8941 eV
 
 Non-SCC calculation
 
 Full geometry written in geo_end.{xyz|gen}
 
-Dipole moment:    0.00000000    0.00000000   -0.00201624 au
-Dipole moment:    0.00000000    0.00000000   -0.00512476 Debye
+Dipole moment:    0.00000000    0.00000000   -0.00056904 au
+Dipole moment:    0.00000000    0.00000000   -0.00144635 Debye
 
 Geometry converged
 
