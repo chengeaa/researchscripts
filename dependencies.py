@@ -151,13 +151,153 @@ def coordLabeller(atoms, image, fullCoordinations = {"Si": 4, "N":3, "H":1, "F":
         newBonds[idx] = keptBonds
     return relativeCoordinations, newBonds
 
+def readStructs(datadir, slabEnergy, adsorbateEnergy):
+    """
+        Currently designed for output from single layer directory trees
+        Reads in final adsorption geometries and energy data,
+            returns dataframe with geometry and energy data
+
+        Input:
+            datadir: string that points to directory containing the following:
+                - convergence: each line i has convergence status of run i
+                - energies: each line i has final total energy from run i
+                - output{indices}.gen: final geometries for each index
+            slabEnergy: energy of slab
+            adsorbateEnergy: energy of the adsorbate in the system
+        Output:
+            output: pd Dataframe with:
+                - index: indices for runs that worked
+                - geometry: final geometry of run
+                - total energy: raw energy from file
+                - adsorption energy: energy as adjusted by adsorbate_energy
+    """
+    geometries = {}
+    convergence = pd.read_csv(datadir + "convergence", header = None)
+    energies = pd.read_csv(datadir + "energies", header = None)
+    output =  pd.concat([energies, convergence], axis = 1)
+    output.columns = ["E", "conv"]
+
+    for i in os.listdir(datadir):
+        key = re.search(r"output(\d+).gen", i)
+        if key:
+            key = int(key.group(1))
+            geometries[key] =  gen.read_gen(datadir + i)
+    output['geom'] = pd.Series(geometries)
+
+    output = output[output['conv'] == "Geometry converged"]
+    output = output.drop("conv", axis = 1)
+
+    output['E_ads'] = output["E"] - (adsorbateEnergy + slabEnergy)
+    return output
+
+
+def convertAdsorbateToHe(struct, centerIndex, molIndices, height = None):
+    """
+    Preprocess final relaxed adsorption structures; replace adsorbate with He
+    Input:
+        struct: total structure (Atoms object)
+        centerIndex: index of central atom (where He will be) (int)
+        molIndices: list of indices to delete from the slab
+        height(float) : height of He to be placed
+    Output:
+        output: Atoms object with He representing the location of the adsorbate
+    """
+    x, y, z = struct[centerIndex].position
+    output = struct.copy()
+    del output[[atom.index for atom in output if atom.index in molIndices]]
+    if height:
+        add_adsorbate(output, "He", height = height, position = (x, y))
+    else:
+        output.append(Atom("He", position=[x,y,z])) # adds to exact position of centeratom
+    return output
+
+
+def getSOAPs(geometries, rcut = 5, nmax = 10, lmax = 9, sigma = 0.1,
+             periodic = True, crossover = True, sparse = False):
+    """
+    Takes a Series of geometries with one He present,
+        returns SOAP representation of the chemical environment of He for each item
+    Assumes any given structure in `geometries` has the same collection of elements
+        as all the other structures
+    Assumes any given structure in `geometries` has the same number of atoms as all
+        the other structures
+
+    Input:
+        geometries: Series of Atoms objects; each must contain exactly 1 He atom
+        rcut, nmax, lmax, sigma, periodic, crossover, sparse: SOAP parameters
+    Output:
+        output: Series of SOAP matrices, each corresponding to the appropriate index
+    """
+    refgeom = geometries.iloc[0] #use the first geometry as a reference geometry
+
+    ## set up descriptor
+    species = np.unique([i.symbol for i in refgeom])
+    desc = SOAP(species=species, rcut = rcut, nmax = nmax, lmax = lmax,
+                sigma = sigma, periodic = periodic, crossover = crossover, sparse = sparse)
+    ## apply descriptor
+    soaps = {}
+    HeLoc = len(refgeom) - 1  # assume He atom is last one in Atoms list
+    for i, geom in geometries.iteritems():
+        tempSOAP = preprocessing.normalize(
+            desc.create(geom, positions = [HeLoc], n_jobs = 4)) # SOAP representation of temp
+        soaps[i] = tempSOAP[0]
+    return pd.Series(soaps,name = 'SOAP')
+
+# Python program to print connected
+# components in an undirected graph
+# https://www.geeksforgeeks.org/connected-components-in-an-undirected-graph/
+ 
+ 
+class Graph:
+ 
+    # init function to declare class variables
+    def __init__(self, V):
+        self.V = V
+        self.adj = [[] for i in range(V)]
+ 
+    def DFSUtil(self, temp, v, visited):
+ 
+        # Mark the current vertex as visited
+        visited[v] = True
+ 
+        # Store the vertex to list
+        temp.append(v)
+ 
+        # Repeat for all vertices adjacent
+        # to this vertex v
+        for i in self.adj[v]:
+            if visited[i] == False:
+ 
+                # Update the list
+                temp = self.DFSUtil(temp, i, visited)
+        return temp
+ 
+    # method to add an undirected edge
+    def addEdge(self, v, w):
+        self.adj[v].append(w)
+        self.adj[w].append(v)
+ 
+    # Method to retrieve connected components
+    # in an undirected graph
+    def connectedComponents(self):
+        visited = []
+        cc = []
+        for i in range(self.V):
+            visited.append(False)
+        for v in range(self.V):
+            if visited[v] == False:
+                temp = []
+                cc.append(self.DFSUtil(temp, v, visited))
+        return cc
+
+# This code is contributed by Abhishek Valsan
 
 ##############
 # structures #
 ##############
 mef = vasp.read_vasp("reference_files/CONTCAR_mef")
 cf4 = vasp.read_vasp("reference_files/CONTCAR_cf4")
-amorphous = vasp.read_vasp("reference_files/CONTCAR_amorphous_cubic")
+amorphous = gen.read_gen("reference_files/amorphous_base.gen")
 xtl_n = vasp.read_vasp("reference_files/CONTCAR_nrich")
 xtl_si = vasp.read_vasp("reference_files/CONTCAR_sirich")
 xtl2x2 = gen.read_gen("reference_files/2x2xtl.gen")
