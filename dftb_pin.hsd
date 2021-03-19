@@ -1,8 +1,12 @@
 Geometry = GenFormat {
-2  C
-Ar   C
-1      1      0.000000000000000      0.000000000000000      0.000000000000000
-2      2      0.000000000000000      0.000000000000000      4.000000000000000
+6  C
+C    H    F    Ar
+1      1      1.986558304337375      3.300542937387290     14.530153540041360
+2      2      1.538361993362270      4.233671313768280     14.161164323061598
+3      2      3.043124109917258      3.242186984682415     14.234540478195958
+4      2      1.433833286374498      2.432598013182645     14.144994148376519
+5      3      1.910926586646670      3.291594367787117     15.935340345930721
+6      4      1.910926586646670      3.291594367787117     19.035340285983839
 }
 Driver = ConjugateGradient {
   MaxForceComponent = 1E10
@@ -16,15 +20,18 @@ Driver = ConjugateGradient {
   Constraints = {}
 }
 Hamiltonian = DFTB {
+  Charge = 2
   MaxAngularMomentum = {
     Ar = "p"
     C = "p"
+    F = "p"
+    H = "s"
   }
   PolynomialRepulsive = SetForAll {
 Yes
   }
   SlaterKosterFiles = Type2FileNames {
-    Prefix = /home/erik/Desktop/researchtemp/dftb/pbc-0-3/
+    Prefix = /home/erik/Desktop/research/dftb/pbc-0-3/
     Separator = "-"
     Suffix = ".skf"
     LowerCaseTypeName = No
@@ -39,7 +46,6 @@ Yes
     Temperature = 0.0000000000000000
   }
   Solver = RelativelyRobust {}
-  Charge = 0.0000000000000000
   OnSiteCorrection = {}
   Dispersion = {}
   Electrostatics = GammaFunctional {}

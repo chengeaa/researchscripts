@@ -3,9 +3,11 @@
 ###########
 # base python
 import os
+import pickle
 import copy
 import re
 from sys import getsizeof
+import sys
 import random
 
 # scipy
@@ -19,10 +21,12 @@ from pathlib import Path
 from scipy.optimize import curve_fit
 from scipy.interpolate import interp1d, interp2d
 from sklearn.metrics.pairwise import rbf_kernel
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.kernel_ridge import KernelRidge
 from sklearn import preprocessing
 import matplotlib.tri as tri
 
-plt.rcParams["figure.figsize"] = (20,7)
+#plt.rcParams["figure.figsize"] = (20,7)
 
 #ase
 from ase.io import gen, vasp, xyz, extxyz, dftb
@@ -30,10 +34,13 @@ from ase.io.dftb import read_dftb_velocities, write_dftb_velocities
 from ase.calculators.dftb import Dftb
 from ase import Atoms, Atom
 from ase.constraints import FixAtoms
+from ase.formula import Formula
 from ase.visualize import view
 from ase.build import make_supercell
 from ase.visualize.plot import plot_atoms
-from ase.build import add_adsorbate
+from ase.build import add_adsorbate, add_vacuum
+from ase.cell import Cell
+from ase.neighborlist import NewPrimitiveNeighborList, natural_cutoffs
 import nglview
 from ase.geometry.analysis import Analysis
 
@@ -151,7 +158,7 @@ def coordLabeller(atoms, image, fullCoordinations = {"Si": 4, "N":3, "H":1, "F":
         newBonds[idx] = keptBonds
     return relativeCoordinations, newBonds
 
-def readStructs(datadir, slabEnergy, adsorbateEnergy):
+def readStructs(datadir, shallow = True, name = "output"):
     """
         Currently designed for output from single layer directory trees
         Reads in final adsorption geometries and energy data,
@@ -160,7 +167,7 @@ def readStructs(datadir, slabEnergy, adsorbateEnergy):
         Input:
             datadir: string that points to directory containing the following:
                 - convergence: each line i has convergence status of run i
-                - energies: each line i has final total energy from run i
+                - energies: each line i has total energy and ads energy from run i
                 - output{indices}.gen: final geometries for each index
             slabEnergy: energy of slab
             adsorbateEnergy: energy of the adsorbate in the system
@@ -172,23 +179,82 @@ def readStructs(datadir, slabEnergy, adsorbateEnergy):
                 - adsorption energy: energy as adjusted by adsorbate_energy
     """
     geometries = {}
-    convergence = pd.read_csv(datadir + "convergence", header = None)
-    energies = pd.read_csv(datadir + "energies", header = None)
-    output =  pd.concat([energies, convergence], axis = 1)
-    output.columns = ["E", "conv"]
+    if shallow:
+        pattern = r"{}(\d+).gen".format(name)
+    else:
+        pattern = r"{}(\d+-\d+).gen".format(name)
+    files = os.listdir(datadir) 
 
-    for i in os.listdir(datadir):
-        key = re.search(r"output(\d+).gen", i)
-        if key:
-            key = int(key.group(1))
-            geometries[key] =  gen.read_gen(datadir + i)
-    output['geom'] = pd.Series(geometries)
+    if "energies" in files and "convergence" in files:
+        convergence = pd.read_csv(datadir + "convergence", header = None)
+        energies = pd.read_csv(datadir + "energies", header = None)
+        output =  pd.concat([energies, convergence], axis = 1)
+        output.columns = ["E", "E_ads", "conv"]
 
-    output = output[output['conv'] == "Geometry converged"]
-    output = output.drop("conv", axis = 1)
+        for i in files:
+            key = re.search(pattern, i)
+            if key:
+                if shallow:
+                    key = int(key.group(1))
+                else:
+                    key = key.group(1)
+                geometries[key] =  gen.read_gen(datadir + i)
+        output['geom'] = pd.Series(geometries)
 
-    output['E_ads'] = output["E"] - (adsorbateEnergy + slabEnergy)
+        output = output[output['conv'] == "Geometry converged"]
+        output = output.drop("conv", axis = 1)
+
+    else:
+        for i in files:
+            key = re.search(pattern, i)
+            if key:
+                if shallow:
+                    key = int(key.group(1))
+                else:
+                    key = key.group(1)
+                geometries[key] =  gen.read_gen(datadir + i)
+        output = pd.DataFrame(pd.Series(geometries))
+        output.columns = ['geom']
     return output
+
+def postprocessResults(directory = "../"):
+    """
+        Takes in a list of indices, corresponding to the bombardment trials to analyze
+        Looks for files named `results$i{bomb,quench,eq}.csv` in directory specified. 
+        Returns list of 3 dfs; each one has elements and keys
+    """
+
+    subdirs = np.arange(10)
+    bombdata = {i :pd.read_csv(directory + "results%dbomb.csv" % i, index_col=0) 
+            for i in subdirs}
+    quenchdata = {i : pd.read_csv(directory + "results%dquench.csv" % i, index_col=0) 
+            for i in subdirs}
+    eqdata = { i: pd.read_csv(directory + "results%deq.csv" % i, index_col=0) 
+            for i in subdirs}
+
+    return [bombdata, quenchdata, eqdata]
+
+
+
+def postprocessAggregated(simindices, directory = "../"):
+    """
+        Takes in a list of indices, corresponding to the bombardment trials to analyze
+        Looks for files named `aggregated_{bomb,quench,eq}$i` in directory specified. 
+    """
+    bombdata = {i :pd.read_csv(directory + "aggregated_bomb%d.csv" % i, index_col=0) 
+            for i in simindices}
+    quenchdata = {i : pd.read_csv(directory + "aggregated_quench%d.csv" % i, index_col=0) 
+            for i in simindices}
+    eqdata = { i: pd.read_csv(directory + "aggregated_eq%d.csv" % i, index_col=0) 
+            for i in simindices}
+    data = {"bomb": bombdata, "quench": quenchdata, "eq":eqdata}
+
+
+    aggregated = {}
+    for i in simindices:
+        for step in ["bomb", "quench", "eq"]:
+            aggregated["%i-%s" % (i, step)] = data[step][i].sum(axis = 1)
+    return pd.DataFrame(aggregated)
 
 
 def convertAdsorbateToHe(struct, centerIndex, molIndices, height = None):
@@ -212,7 +278,8 @@ def convertAdsorbateToHe(struct, centerIndex, molIndices, height = None):
     return output
 
 
-def getSOAPs(geometries, rcut = 5, nmax = 10, lmax = 9, sigma = 0.1,
+def getSOAPs(geometries, species,
+        rcut = 5, nmax = 10, lmax = 9, sigma = 0.1,
              periodic = True, crossover = True, sparse = False):
     """
     Takes a Series of geometries with one He present,
@@ -228,21 +295,72 @@ def getSOAPs(geometries, rcut = 5, nmax = 10, lmax = 9, sigma = 0.1,
     Output:
         output: Series of SOAP matrices, each corresponding to the appropriate index
     """
-    refgeom = geometries.iloc[0] #use the first geometry as a reference geometry
+#   refgeom = geometries.iloc[0] #use the first geometry as a reference geometry
 
     ## set up descriptor
-    species = np.unique([i.symbol for i in refgeom])
+#   species = np.unique([i.symbol for i in refgeom])
     desc = SOAP(species=species, rcut = rcut, nmax = nmax, lmax = lmax,
                 sigma = sigma, periodic = periodic, crossover = crossover, sparse = sparse)
     ## apply descriptor
     soaps = {}
-    HeLoc = len(refgeom) - 1  # assume He atom is last one in Atoms list
     for i, geom in geometries.iteritems():
+        HeLoc = len(geom) - 1  # assume He atom is last one in Atoms list
         tempSOAP = preprocessing.normalize(
             desc.create(geom, positions = [HeLoc], n_jobs = 4)) # SOAP representation of temp
         soaps[i] = tempSOAP[0]
     return pd.Series(soaps,name = 'SOAP')
 
+
+def predictz(surf, x, y, zmodel, species):
+    """
+    surf: bare substrate
+    x, y: position at which to place adsorbate
+    zmodel: model object
+
+    returns predicted z value
+    """
+    searchR = 2.2
+    surf = surf.copy()
+    add_adsorbate(surf, 'He', height = 0, position = (x, y))
+
+    maxz = 0
+    for atom in surf:
+        if atom.symbol == "He": # don't use He position to determine max Z position
+            continue
+        _x, _y, _z = atom.position
+        if ((x - _x)**2 + (y - _y)**2) ** 0.5 < searchR:
+            if _z > maxz:
+                maxz = _z + 2.5
+
+    surf[-1].position[2] = maxz
+
+    X = getSOAPs(pd.Series({0: surf}), species = species)[0].reshape(1, -1) #reshape because just one sample
+    print(X.shape)
+    if zmodel:
+        predz = zmodel.predict(X)
+#       print(maxz, predz)
+    else:
+#         TODO: implement me hehe
+        predz = maxz + 2.5
+    return predz
+
+def getslab(struct):
+    """
+    Input: 
+        struct: structre from which we will trim unbound species (.gen file)
+    Output:
+        baseslab: structure with unbound species trimmed
+    """
+    adjmat = Analysis(struct).adjacency_matrix[0]
+    numnodes = adjmat.shape[0]
+    g = Graph(numnodes)
+    for i in range(numnodes):
+        for j in range(numnodes):
+            if adjmat[i,j]:
+                g.addEdge(i,j)
+    cc = g.connectedComponents()
+    maingraph = np.array([i for i in cc if 0 in i][0])
+    return struct[[atom.index for atom in struct if atom.index in maingraph]]
 # Python program to print connected
 # components in an undirected graph
 # https://www.geeksforgeeks.org/connected-components-in-an-undirected-graph/
