@@ -9,10 +9,13 @@ import re
 from sys import getsizeof
 import sys
 import random
+from inspect import getsourcefile
 
 # scipy
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt,mpld3
 # This import registers the 3D projection, but is otherwise unused.
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
@@ -57,11 +60,11 @@ from sklearn import preprocessing
 from ase.build import bulk
 from ase.optimize import LBFGS
 from ase.visualize import view
-from quippy.potential import Potential
+#from quippy.potential import Potential
 
 
 #misc
-import similaritymeasures
+#import similaritymeasures
 
 #############
 # functions #
@@ -414,16 +417,17 @@ class Graph:
 ##############
 # structures #
 ##############
-mef = vasp.read_vasp("reference_files/CONTCAR_mef")
-cf4 = vasp.read_vasp("reference_files/CONTCAR_cf4")
-amorphous = gen.read_gen("reference_files/amorphous_base.gen")
-xtl_n = vasp.read_vasp("reference_files/CONTCAR_nrich")
-xtl_si = vasp.read_vasp("reference_files/CONTCAR_sirich")
-xtl2x2 = gen.read_gen("reference_files/2x2xtl.gen")
-xtl2x2_sifterm = gen.read_gen("reference_files/2x2xtl_sifterm.gen")
-heavy_bomb = vasp.read_vasp("reference_files/CONTCAR_heavy_bombard")
-bulk222 = vasp.read_vasp("reference_files/CONTCAR_222bulk")
-annealed = vasp.read_vasp("reference_files/CONTCAR_annealed_unitcell")
+path = os.path.dirname(os.path.abspath(getsourcefile(lambda:0)))
+mef = vasp.read_vasp(path + "/reference_files/CONTCAR_mef")
+cf4 = vasp.read_vasp(path + "/reference_files/CONTCAR_cf4")
+amorphous = gen.read_gen(path + "/reference_files/amorphous_base.gen")
+xtl_n = vasp.read_vasp(path + "/reference_files/CONTCAR_nrich")
+xtl_si = vasp.read_vasp(path + "/reference_files/CONTCAR_sirich")
+xtl2x2 = gen.read_gen(path + "/reference_files/2x2xtl.gen")
+xtl2x2_sifterm = gen.read_gen(path + "/reference_files/2x2xtl_sifterm.gen")
+heavy_bomb = vasp.read_vasp(path + "/reference_files/CONTCAR_heavy_bombard")
+bulk222 = vasp.read_vasp(path + "/reference_files/CONTCAR_222bulk")
+annealed = vasp.read_vasp(path + "/reference_files/CONTCAR_annealed_unitcell")
 
 #############
 # constants #
