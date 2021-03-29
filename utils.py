@@ -79,6 +79,7 @@ def readStructs(datadir, shallow = True, name = "output"):
 
 def readData(outdir, indir, useRemoval = True, useFrags = True, useBonds = True, wrapStructs = True):
     """
+    Specifically made for data with BOTH input and output structures
     Read structures; append removal data, fragment data, and bond data optionally
     Wrap structures optionally
 

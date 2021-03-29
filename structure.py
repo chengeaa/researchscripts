@@ -1,3 +1,5 @@
+from ase.io import gen
+import pandas as pd
 
 def getslab(struct):
     """
@@ -19,6 +21,37 @@ def getslab(struct):
 # Python program to print connected
 # components in an undirected graph
 # https://www.geeksforgeeks.org/connected-components-in-an-undirected-graph/
+
+def getslabs(data, directory, useInputs = False):
+    """
+    Utility for getting and writing slab files from readData (utils.py) function
+    data is the df from readData function or any df with (struct, in) and (struct, out) columns
+    """
+
+    if useInputs:
+        slabSource = data['struct']['in']
+    else:
+        slabSource = data['struct']['out']
+
+    dataDir = directory
+    slabs = {}
+
+    # # to generate slabs
+
+    for key, value in slabSource.iteritems():
+        slabs[key] = getslab(value)
+
+    for key, value in slabs.items():
+        gen.write_gen(dataDir + "slab{}.gen".format(key), value)
+
+    # to read slabs
+    for key in data.index:
+        slabs[key] = gen.read_gen(dataDir + "slab{}.gen".format(key))
+
+    if useInputs:
+        data.loc[:, ('struct', 'inslab')] = pd.Series(slabs)
+    else:
+        data.loc[:, ('struct', 'outslab')] = pd.Series(slabs)
 
 class Graph:
  
