@@ -76,7 +76,75 @@ def readStructs(datadir, shallow = True, name = "output"):
         output = pd.DataFrame(pd.Series(geometries))
         output.columns = ['geom']
     return output
- 
+
+def readData(outdir, indir, useRemoval = True, useFrags = True, useBonds = True, wrapStructs = True):
+    """
+    Read structures; append removal data, fragment data, and bond data optionally
+    Wrap structures optionally
+
+    returns df of the above with columns (struct, in), (struct, out), 
+        optionally, (frags, <fragnames>), (bonds, <bondnames>), (removal, <removedelems>)
+        where each <x> corresponds to a column label for a specific subgroup (ie, NH3, N-H, or NH3 resp.)
+    """
+
+    # read structures, initialize df
+
+    data = pd.concat([readStructs(indir, shallow = False, name = 'input'),
+                         readStructs(outdir, shallow = False)
+                        ], axis = 1)
+    data.columns = ['in', 'out']
+    for i in data['in']:
+        i.wrap()
+
+    if useRemoval:
+        bombdata, quenchdata, eqdata = postprocessResults(outdir)
+
+        newdata = {}
+        for idx in data.index:
+            i, j = idx.split("-") # for i-j type output
+            i = int(i)
+            newdata[idx] = data.loc[idx].append(bombdata[i][j])
+        data = pd.DataFrame(newdata).T
+        ncols = data.shape[1]
+        data.columns = pd.MultiIndex.from_arrays(
+            [["struct"] * 2 + ["removal"] * (ncols - 2), data.columns],
+            names = ['source', 'data']
+        )
+    else:
+        data.columns = pd.MultiIndex.from_arrays(
+            [["struct"] * 2, data.columns],
+            names = ['source', 'data']
+        )
+
+
+    if useFrags:
+        infrags = pd.read_csv(indir+"fragdata.csv", index_col=0)
+        outfrags = pd.read_csv(outdir+"fragdata.csv", index_col=0)
+
+        fragdiffs = outfrags.subtract(infrags, fill_value = 0)
+        ncols = fragdiffs.shape[1]
+        fragdiffs.columns = pd.MultiIndex.from_arrays(
+            [['frags'] * ncols, fragdiffs.columns], names = ['source', 'data']
+        )
+
+        data = pd.concat([data, fragdiffs], axis = 1)
+
+
+    if useBonds:
+        outbonds = pd.read_csv(outdir + "bondcounts.csv", index_col=0)
+
+        inbonds = pd.read_csv(indir + "bondcounts.csv", index_col=0)
+
+        bondDiffs = outbonds.subtract(inbonds)
+
+        ncols = bondDiffs.shape[1]
+        bondDiffs.columns = pd.MultiIndex.from_arrays(
+            [['bonds'] * ncols, bondDiffs.columns], names = ['source', 'data']
+        )
+
+        data = pd.concat([data, bondDiffs], axis = 1)
+    return data
+
 #############
 # constants #
 #############
