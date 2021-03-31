@@ -88,10 +88,10 @@ def getSOAPs(geometries, rcut = 5, nmax = 10, lmax = 9, sigma = 0.1,
 
 
 # load z prediction and E_ads prediction models (pickled KRR models)
-with open('zmodel.pkl', 'rb') as f:
+with open('models/zmodel.pkl', 'rb') as f:
     zmodel = pickle.load(f)
 
-with open('Emodel.pkl', 'rb') as f:
+with open('models/Emodel.pkl', 'rb') as f:
     Emodel = pickle.load(f)
 
 

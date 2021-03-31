@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Welcome to researchscripts’s documentation! &#8212; researchscripts 0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -23,15 +23,21 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="search" title="Search" href="search.html" /> 
   </head>
   <body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">researchscripts 0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
@@ -42,7 +48,12 @@
 <h1>Welcome to researchscripts’s documentation!<a class="headerlink" href="#welcome-to-researchscripts-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<span class="target" id="module-agg2lammps"></span><span class="target" id="module-analysis"></span><dl class="function">
+<div class="section" id="module-agg2lammps">
+<span id="agg2lammps"></span><h2>agg2lammps<a class="headerlink" href="#module-agg2lammps" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-analysis">
+<span id="analysis"></span><h2>analysis<a class="headerlink" href="#module-analysis" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
 <dt id="analysis.coordLabeller">
 <code class="descclassname">analysis.</code><code class="descname">coordLabeller</code><span class="sig-paren">(</span><em>atoms</em>, <em>image</em>, <em>fullCoordinations={'F': 1</em>, <em>'H': 1</em>, <em>'N': 3</em>, <em>'Si': 4}</em>, <em>minAngles={'F': 360</em>, <em>'H': 360</em>, <em>'N': 109.5</em>, <em>'Si': 90}</em>, <em>maxBonds_per_element={'F': 1</em>, <em>'H': 1</em>, <em>'N': 4</em>, <em>'Si': 6}</em>, <em>angle_tolerance=0</em>, <em>bond_tolerance=0.5</em>, <em>minz=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/analysis.html#coordLabeller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analysis.coordLabeller" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
@@ -53,7 +64,10 @@
 bonds: list of bonds for atom i</p>
 </dd></dl>
 
-<span class="target" id="module-cart2dir"></span><p>Performs some kind of parsing on POSCAR file!…?</p>
+</div>
+<div class="section" id="module-cart2dir">
+<span id="cart2dir"></span><h2>cart2dir<a class="headerlink" href="#module-cart2dir" title="Permalink to this headline">¶</a></h2>
+<p>Performs some kind of parsing on POSCAR file!…?</p>
 <p>Erik won’t tell me what this does, so all I can say is that it parses the file passed in
 and writes some modified version to an outfile.</p>
 <dl class="docutils">
@@ -62,7 +76,10 @@ and writes some modified version to an outfile.</p>
 <dt>Returns:</dt>
 <dd>None; writes results to “{POSCAR}.out” based on the POSCAR filepath provided as an argument.</dd>
 </dl>
-<span class="target" id="module-energyanimator"></span><dl class="function">
+</div>
+<div class="section" id="module-energyanimator">
+<span id="energyanimator"></span><h2>energyanimator<a class="headerlink" href="#module-energyanimator" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
 <dt id="energyanimator.main">
 <code class="descclassname">energyanimator.</code><code class="descname">main</code><span class="sig-paren">(</span><em>filename='OSZICAR'</em>, <em>outputname='energy'</em>, <em>interval=16.666666666666668</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/energyanimator.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#energyanimator.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls OSZICARsearch to generate the potential and kinetic energy arrays;
@@ -76,9 +93,21 @@ sums the two, and creates an animation</p>
 array of values for that statistic from each ionic loop.</p>
 </dd></dl>
 
-<span class="target" id="module-gen2pos"></span><p>Convert from .gen to POSCAR</p>
-<span class="target" id="module-genvis"></span><p>View .gen file</p>
-<span class="target" id="module-krr_utils"></span><dl class="function">
+</div>
+<div class="section" id="module-gen2pos">
+<span id="gen2pos"></span><h2>gen2pos<a class="headerlink" href="#module-gen2pos" title="Permalink to this headline">¶</a></h2>
+<p>Convert from .gen to POSCAR</p>
+</div>
+<div class="section" id="module-genvis">
+<span id="genvis"></span><h2>genvis<a class="headerlink" href="#module-genvis" title="Permalink to this headline">¶</a></h2>
+<p>View .gen file</p>
+</div>
+<div class="section" id="gridding">
+<h2>gridding<a class="headerlink" href="#gridding" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-krr_utils">
+<span id="krr-utils"></span><h2>krr_utils<a class="headerlink" href="#module-krr_utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
 <dt id="krr_utils.convertAdsorbateToHe">
 <code class="descclassname">krr_utils.</code><code class="descname">convertAdsorbateToHe</code><span class="sig-paren">(</span><em>struct</em>, <em>centerIndex</em>, <em>molIndices</em>, <em>height=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krr_utils.html#convertAdsorbateToHe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#krr_utils.convertAdsorbateToHe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Preprocess final relaxed adsorption structures; replace adsorbate with He
@@ -121,7 +150,25 @@ zmodel: model object</p>
 <p>returns predicted z value</p>
 </dd></dl>
 
-<span class="target" id="module-latticeconstmod"></span><span class="target" id="module-measure_damage_depth"></span><span class="target" id="module-pbcprettify"></span><span class="target" id="module-periodicprocess"></span><span class="target" id="module-postprocessing"></span><dl class="function">
+</div>
+<div class="section" id="module-latticeconstmod">
+<span id="latticeconstmod"></span><h2>latticeconstmod<a class="headerlink" href="#module-latticeconstmod" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-measure_damage_depth">
+<span id="measure-damage-depth"></span><h2>measure_damage_depth<a class="headerlink" href="#module-measure_damage_depth" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pbcprettify">
+<span id="pbcprettify"></span><h2>pbcprettify<a class="headerlink" href="#module-pbcprettify" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-periodicprocess">
+<span id="periodicprocess"></span><h2>periodicprocess<a class="headerlink" href="#module-periodicprocess" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="placeadsorbates">
+<h2>placeadsorbates<a class="headerlink" href="#placeadsorbates" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-postprocessing">
+<span id="postprocessing"></span><h2>postprocessing<a class="headerlink" href="#module-postprocessing" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
 <dt id="postprocessing.postprocessAggregated">
 <code class="descclassname">postprocessing.</code><code class="descname">postprocessAggregated</code><span class="sig-paren">(</span><em>simindices</em>, <em>directory='../'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/postprocessing.html#postprocessAggregated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#postprocessing.postprocessAggregated" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes in a list of indices, corresponding to the bombardment trials to analyze
@@ -136,7 +183,20 @@ Looks for files named <cite>results$i{bomb,quench,eq}.csv</cite> in directory sp
 Returns list of 3 dfs; each one has elements and keys</p>
 </dd></dl>
 
-<span class="target" id="module-random_velos"></span><span class="target" id="module-structure"></span><dl class="function">
+</div>
+<div class="section" id="module-random_velos">
+<span id="random-velos"></span><h2>random_velos<a class="headerlink" href="#module-random_velos" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-refstructs">
+<span id="refstructs"></span><h2>refstructs<a class="headerlink" href="#module-refstructs" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-seed_monolayer">
+<span id="seed-monolayer"></span><h2>seed_monolayer<a class="headerlink" href="#module-seed_monolayer" title="Permalink to this headline">¶</a></h2>
+<p>Designed to work on the cluster, removing ‘ejected species’ after each equilibration step</p>
+</div>
+<div class="section" id="module-structure">
+<span id="structure"></span><h2>structure<a class="headerlink" href="#module-structure" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
 <dt id="structure.getslab">
 <code class="descclassname">structure.</code><code class="descname">getslab</code><span class="sig-paren">(</span><em>struct</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structure.html#getslab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#structure.getslab" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
@@ -154,7 +214,57 @@ Returns list of 3 dfs; each one has elements and keys</p>
 data is the df from readData function or any df with (struct, in) and (struct, out) columns</p>
 </dd></dl>
 
-<span class="target" id="module-translatepos"></span><span class="target" id="module-utils"></span><dl class="function">
+</div>
+<div class="section" id="module-translatepos">
+<span id="translatepos"></span><h2>translatepos<a class="headerlink" href="#module-translatepos" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-transmute">
+<span id="transmute"></span><h2>transmute<a class="headerlink" href="#module-transmute" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="transmute.transmute">
+<code class="descclassname">transmute.</code><code class="descname">transmute</code><span class="sig-paren">(</span><em>threshold, transmute=True, target='C', slabElems=['Si', 'N'], surfDepth=6, numStructs=-1, numOut=-1, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transmute.html#transmute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transmute.transmute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find undercoordinated surface/near-surface atoms and transmute them to C
+Inputs:</p>
+<blockquote>
+<div><p>threshold (k): maxiumum number of bonds to be considered “undercoordinated” (should be 1 or 2)
+transmute: whether to transmute elements or not 
+slabElems: elements to consider as part of the ‘core slab’; only these will be transmuted
+surfDepth: depth of atoms to consider below surface; surface defined as</p>
+<blockquote>
+<div>max z coord among slabElems</div></blockquote>
+<dl class="docutils">
+<dt>simple: Use basic bond counting as implemented in ASE, </dt>
+<dd>or advanced with coordLabeller from <cite>dependencies</cite> (simple=False is UNTESTED!!!)</dd>
+</dl>
+<p>numStructs: Number of structures to consider
+numOut: Number of structures to output
+<a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs: to be passed to the readStructs function from <cite>dependencies</cite></p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="transmute.write_transmuted">
+<code class="descclassname">transmute.</code><code class="descname">write_transmuted</code><span class="sig-paren">(</span><em>outdir</em>, <em>numout</em>, <em>numrep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transmute.html#write_transmuted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transmute.write_transmuted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write results of transmute function into some directory
+numout corresponds the top <cite>numout</cite> structures to output
+numrep is the number of times to replicate each of the above structures,</p>
+<blockquote>
+<div>with random adjustment of last atom position (should be Ar for bomb)</div></blockquote>
+<p>files written in input$i-$j.gen format</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-trim">
+<span id="trim"></span><h2>trim<a class="headerlink" href="#module-trim" title="Permalink to this headline">¶</a></h2>
+<p>Designed to work on the cluster, removing ‘ejected species’ after each bomb or quench step</p>
+</div>
+<div class="section" id="module-trimandseed">
+<span id="trimandseed"></span><h2>trimandseed<a class="headerlink" href="#module-trimandseed" title="Permalink to this headline">¶</a></h2>
+<p>Designed to work on the cluster, removing ‘ejected species’ after each equilibration step</p>
+</div>
+<div class="section" id="module-utils">
+<span id="utils"></span><h2>utils<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
 <dt id="utils.KE">
 <code class="descclassname">utils.</code><code class="descname">KE</code><span class="sig-paren">(</span><em>v_tot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils.html#KE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.KE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns KE of Ar+ in eV given total velocity</p>
@@ -173,8 +283,9 @@ data is the df from readData function or any df with (struct, in) and (struct, o
 Read structures; append removal data, fragment data, and bond data optionally
 Wrap structures optionally</p>
 <dl class="docutils">
-<dt>returns df of the above with columns (struct, in), (struct, out), </dt>
-<dd>optionally, (frags, &lt;fragnames&gt;), (bonds, &lt;bondnames&gt;), (removal, &lt;removedelems&gt;)
+<dt>Returns:</dt>
+<dd>df of the above with columns (struct, in), (struct, out), 
+optionally, (frags, &lt;fragnames&gt;), (bonds, &lt;bondnames&gt;), (removal, &lt;removedelems&gt;)
 where each &lt;x&gt; corresponds to a column label for a specific subgroup (ie, NH3, N-H, or NH3 resp.)</dd>
 </dl>
 </dd></dl>
@@ -198,7 +309,7 @@ Reads in final adsorption geometries and energy data, returns dataframe with geo
 <p class="last">slabEnergy: energy of slab
 adsorbateEnergy: energy of the adsorbate in the system</p>
 </dd>
-<dt>Output:</dt>
+<dt>Returns:</dt>
 <dd><dl class="first last docutils">
 <dt>output: pd Dataframe with:</dt>
 <dd><ul class="first last simple">
@@ -219,7 +330,10 @@ adsorbateEnergy: energy of the adsorbate in the system</p>
 <dd><p>Returns v(z) of Ar+ in eV given KE</p>
 </dd></dl>
 
-<span class="target" id="module-visualization"></span><dl class="function">
+</div>
+<div class="section" id="module-visualization">
+<span id="visualization"></span><h2>visualization<a class="headerlink" href="#module-visualization" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
 <dt id="visualization.plotElemDist">
 <code class="descclassname">visualization.</code><code class="descname">plotElemDist</code><span class="sig-paren">(</span><em>data, targetElem='C', latticeElems=['Si', 'N', 'H'], nbins=25, stacked=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/visualization.html#plotElemDist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualization.plotElemDist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot distribution of element within slab, data should be arraylike collection of stuctures</p>
@@ -231,6 +345,7 @@ adsorbateEnergy: energy of the adsorbate in the system</p>
 <dd><p>Where data is list of Atoms objects</p>
 </dd></dl>
 
+</div>
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
@@ -246,13 +361,7 @@ adsorbateEnergy: energy of the adsorbate in the system</p>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="#">Documentation overview</a><ul>
-  </ul></li>
-</ul>
-</div>
+        <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -267,20 +376,21 @@ adsorbateEnergy: energy of the adsorbate in the system</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2021, Erik Cheng.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
-      
-      |
-      <a href="_sources/index.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">researchscripts 0 documentation</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Erik Cheng.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+    </div>
   </body>
 </html>

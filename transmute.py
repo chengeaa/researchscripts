@@ -1,4 +1,6 @@
-from dependencies import *
+from ase.geometry.analysis import Analysis
+from utils import readStructs
+from analysis import coordLabeller
 
 def transmute(threshold, 
          transmute = True,

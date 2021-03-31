@@ -1,5 +1,6 @@
 import os
 from ase.io import gen, vasp
+from inspect import getsourcefile
 
 ##############
 # structures #

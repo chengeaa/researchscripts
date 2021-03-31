@@ -2,8 +2,15 @@
 '''
 Designed to work on the cluster, removing 'ejected species' after each equilibration step
 '''
-from dependencies import *
+import numpy as np
+import pandas as pd
+from ase.io import vasp,gen
+from ase.build import add_adsorbate
+from krr_utils import predictz
+from structure import getslab
+import pickle
 import time
+import sys
 
 def main(cutoff, 
         datapath, 

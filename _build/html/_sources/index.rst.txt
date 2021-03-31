@@ -9,57 +9,126 @@ Welcome to researchscripts's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
+agg2lammps
+-----------------------------
 .. automodule:: agg2lammps
    :members:
+
+analysis
+-----------------------------
 .. automodule:: analysis
    :members:
+
+cart2dir
+-----------------------------
 .. automodule:: cart2dir
    :members:
+
+energyanimator 
+-----------------------------
 .. automodule:: energyanimator 
    :members:
+
+gen2pos 
+-----------------------------
 .. automodule:: gen2pos 
    :members:
+
+genvis 
+-----------------------------
 .. automodule:: genvis 
    :members:
+
+gridding 
+-----------------------------
 .. automodule:: gridding 
    :members:
+
+krr_utils 
+-----------------------------
 .. automodule:: krr_utils 
    :members:
+
+latticeconstmod 
+-----------------------------
 .. automodule:: latticeconstmod 
    :members:
+
+measure_damage_depth 
+-----------------------------
 .. automodule:: measure_damage_depth 
    :members:
+
+pbcprettify 
+-----------------------------
 .. automodule:: pbcprettify 
    :members:
+
+periodicprocess 
+-----------------------------
 .. automodule:: periodicprocess 
    :members:
+
+placeadsorbates 
+-----------------------------
 .. automodule:: placeadsorbates 
    :members:
+
+postprocessing 
+-----------------------------
 .. automodule:: postprocessing 
    :members:
+
+random_velos 
+-----------------------------
 .. automodule:: random_velos 
    :members:
+
+refstructs 
+-----------------------------
 .. automodule:: refstructs 
    :members:
+
+seed_monolayer 
+-----------------------------
 .. automodule:: seed_monolayer 
    :members:
+
+structure 
+-----------------------------
 .. automodule:: structure 
    :members:
+
+translatepos 
+-----------------------------
 .. automodule:: translatepos 
    :members:
+
+transmute 
+-----------------------------
 .. automodule:: transmute 
    :members:
+
+trim 
+-----------------------------
 .. automodule:: trim 
    :members:
+
+trimandseed 
+-----------------------------
 .. automodule:: trimandseed 
    :members:
+
+utils 
+-----------------------------
 .. automodule:: utils 
    :members:
+
+visualization 
+-----------------------------
 .. automodule:: visualization 
    :members:
-
-
-
 
 Indices and tables
 ==================

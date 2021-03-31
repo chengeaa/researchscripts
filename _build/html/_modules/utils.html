@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>utils &#8212; researchscripts 0 documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -23,15 +23,22 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="search" title="Search" href="../search.html" /> 
   </head>
   <body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">researchscripts 0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
@@ -53,11 +60,15 @@
     <span class="k">return</span> <span class="n">y</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="KE"><a class="viewcode-back" href="../index.html#utils.KE">[docs]</a><span class="k">def</span> <span class="nf">KE</span><span class="p">(</span><span class="n">v_tot</span><span class="p">):</span>
-    <span class="s2">&quot;Returns KE of Ar+ in eV given total velocity&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns KE of Ar+ in eV given total velocity</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="mf">6.24E18</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="mf">1.66E-27</span><span class="o">*</span><span class="mf">39.95</span><span class="o">*</span><span class="p">(</span><span class="n">v_tot</span><span class="o">*</span><span class="mf">1E5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span></div>
 
 <div class="viewcode-block" id="v_from_KE"><a class="viewcode-back" href="../index.html#utils.v_from_KE">[docs]</a><span class="k">def</span> <span class="nf">v_from_KE</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
-    <span class="s2">&quot;Returns v(z) of Ar+ in eV given KE&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns v(z) of Ar+ in eV given KE</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">E</span><span class="o">/</span><span class="p">(</span><span class="mf">6.24E18</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="mf">1.66E-27</span><span class="o">*</span><span class="mf">39.95</span><span class="p">))</span><span class="o">/</span><span class="mf">1E5</span></div>
 
 <div class="viewcode-block" id="readStructs"><a class="viewcode-back" href="../index.html#utils.readStructs">[docs]</a><span class="k">def</span> <span class="nf">readStructs</span><span class="p">(</span><span class="n">datadir</span><span class="p">,</span> <span class="n">shallow</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;output&quot;</span><span class="p">):</span>
@@ -70,10 +81,11 @@
 <span class="sd">                - convergence: each line i has convergence status of run i</span>
 <span class="sd">                - energies: each line i has total energy and ads energy from run i</span>
 <span class="sd">                - output{indices}.gen: final geometries for each index</span>
+<span class="sd">                </span>
 <span class="sd">            slabEnergy: energy of slab</span>
 <span class="sd">            adsorbateEnergy: energy of the adsorbate in the system</span>
 
-<span class="sd">        Output:</span>
+<span class="sd">        Returns:</span>
 <span class="sd">            output: pd Dataframe with:</span>
 <span class="sd">                - index: indices for runs that worked</span>
 <span class="sd">                - geometry: final geometry of run</span>
@@ -125,7 +137,8 @@
 <span class="sd">    Read structures; append removal data, fragment data, and bond data optionally</span>
 <span class="sd">    Wrap structures optionally</span>
 
-<span class="sd">    returns df of the above with columns (struct, in), (struct, out), </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        df of the above with columns (struct, in), (struct, out), </span>
 <span class="sd">        optionally, (frags, &lt;fragnames&gt;), (bonds, &lt;bondnames&gt;), (removal, &lt;removedelems&gt;)</span>
 <span class="sd">        where each &lt;x&gt; corresponds to a column label for a specific subgroup (ie, NH3, N-H, or NH3 resp.)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -199,15 +212,7 @@
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
+        <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
@@ -222,17 +227,22 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2021, Erik Cheng.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
-      
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">researchscripts 0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Erik Cheng.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+    </div>
   </body>
 </html>

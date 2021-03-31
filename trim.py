@@ -13,8 +13,6 @@ import random
 # scipy
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt,mpld3
-import seaborn as sns
 from pathlib import Path
 from scipy.optimize import curve_fit
 from scipy.interpolate import interp1d, interp2d
@@ -23,7 +21,7 @@ from sklearn import preprocessing
 import matplotlib.tri as tri
 
 #ase
-from ase.io import gen, vasp, xyz, extxyz, 
+from ase.io import gen, vasp, xyz, extxyz
 from ase.io.dftb import read_dftb_velocities, write_dftb_velocities
 from ase.calculators.dftb import Dftb
 from ase import Atoms, Atom
@@ -32,7 +30,6 @@ from ase.visualize import view
 from ase.build import make_supercell
 from ase.visualize.plot import plot_atoms
 from ase.build import add_adsorbate
-import nglview
 from ase.geometry.analysis import Analysis
 
 

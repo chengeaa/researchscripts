@@ -12,11 +12,15 @@ def normalize(y,x):
     return y/np.trapz(y,x)
 
 def KE(v_tot):
-    "Returns KE of Ar+ in eV given total velocity"
+    """
+    Returns KE of Ar+ in eV given total velocity
+    """
     return 6.24E18 * 0.5 * 1.66E-27*39.95*(v_tot*1E5)**2
 
 def v_from_KE(E):
-    "Returns v(z) of Ar+ in eV given KE"
+    """
+    Returns v(z) of Ar+ in eV given KE
+    """
     return np.sqrt(E/(6.24E18 * 0.5 * 1.66E-27*39.95))/1E5
 
 def readStructs(datadir, shallow = True, name = "output"):
@@ -29,10 +33,11 @@ def readStructs(datadir, shallow = True, name = "output"):
                 - convergence: each line i has convergence status of run i
                 - energies: each line i has total energy and ads energy from run i
                 - output{indices}.gen: final geometries for each index
+                
             slabEnergy: energy of slab
             adsorbateEnergy: energy of the adsorbate in the system
 
-        Output:
+        Returns:
             output: pd Dataframe with:
                 - index: indices for runs that worked
                 - geometry: final geometry of run
@@ -84,7 +89,8 @@ def readData(outdir, indir, useRemoval = True, useFrags = True, useBonds = True,
     Read structures; append removal data, fragment data, and bond data optionally
     Wrap structures optionally
 
-    returns df of the above with columns (struct, in), (struct, out), 
+    Returns:
+        df of the above with columns (struct, in), (struct, out), 
         optionally, (frags, <fragnames>), (bonds, <bondnames>), (removal, <removedelems>)
         where each <x> corresponds to a column label for a specific subgroup (ie, NH3, N-H, or NH3 resp.)
     """
