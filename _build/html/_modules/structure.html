@@ -1,0 +1,185 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>structure &#8212; researchscripts 0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for structure</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ase.io</span> <span class="kn">import</span> <span class="n">gen</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">ase.geometry.analysis</span> <span class="kn">import</span> <span class="n">Analysis</span>
+
+<div class="viewcode-block" id="getslab"><a class="viewcode-back" href="../index.html#structure.getslab">[docs]</a><span class="k">def</span> <span class="nf">getslab</span><span class="p">(</span><span class="n">struct</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Input: </span>
+<span class="sd">        struct: structre from which we will trim unbound species (.gen file)</span>
+<span class="sd">    Output:</span>
+<span class="sd">        baseslab: structure with unbound species trimmed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">adjmat</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">struct</span><span class="p">)</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">numnodes</span> <span class="o">=</span> <span class="n">adjmat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">numnodes</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numnodes</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numnodes</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">adjmat</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">addEdge</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">)</span>
+    <span class="n">cc</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">connectedComponents</span><span class="p">()</span>
+    <span class="n">maingraph</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">cc</span> <span class="k">if</span> <span class="mi">0</span> <span class="ow">in</span> <span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">struct</span><span class="p">[[</span><span class="n">atom</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">struct</span> <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">index</span> <span class="ow">in</span> <span class="n">maingraph</span><span class="p">]]</span></div>
+<span class="c1"># Python program to print connected</span>
+<span class="c1"># components in an undirected graph</span>
+<span class="c1"># https://www.geeksforgeeks.org/connected-components-in-an-undirected-graph/</span>
+
+<div class="viewcode-block" id="getslabs"><a class="viewcode-back" href="../index.html#structure.getslabs">[docs]</a><span class="k">def</span> <span class="nf">getslabs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">useInputs</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Utility for getting and writing slab files from readData (utils.py) function</span>
+<span class="sd">    data is the df from readData function or any df with (struct, in) and (struct, out) columns</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">useInputs</span><span class="p">:</span>
+        <span class="n">slabSource</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;struct&#39;</span><span class="p">][</span><span class="s1">&#39;in&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">slabSource</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;struct&#39;</span><span class="p">][</span><span class="s1">&#39;out&#39;</span><span class="p">]</span>
+
+    <span class="n">dataDir</span> <span class="o">=</span> <span class="n">directory</span>
+    <span class="n">slabs</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># # to generate slabs</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">slabSource</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="n">slabs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">getslab</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">slabs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">gen</span><span class="o">.</span><span class="n">write_gen</span><span class="p">(</span><span class="n">dataDir</span> <span class="o">+</span> <span class="s2">&quot;slab</span><span class="si">{}</span><span class="s2">.gen&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="c1"># to read slabs</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="n">slabs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">gen</span><span class="o">.</span><span class="n">read_gen</span><span class="p">(</span><span class="n">dataDir</span> <span class="o">+</span> <span class="s2">&quot;slab</span><span class="si">{}</span><span class="s2">.gen&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">useInputs</span><span class="p">:</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">(</span><span class="s1">&#39;struct&#39;</span><span class="p">,</span> <span class="s1">&#39;inslab&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">slabs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">(</span><span class="s1">&#39;struct&#39;</span><span class="p">,</span> <span class="s1">&#39;outslab&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">slabs</span><span class="p">)</span></div>
+
+<span class="k">class</span> <span class="nc">Graph</span><span class="p">:</span>
+ 
+    <span class="c1"># init function to declare class variables</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">V</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">V</span> <span class="o">=</span> <span class="n">V</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adj</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">V</span><span class="p">)]</span>
+ 
+    <span class="k">def</span> <span class="nf">DFSUtil</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">visited</span><span class="p">):</span>
+ 
+        <span class="c1"># Mark the current vertex as visited</span>
+        <span class="n">visited</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+ 
+        <span class="c1"># Store the vertex to list</span>
+        <span class="n">temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+ 
+        <span class="c1"># Repeat for all vertices adjacent</span>
+        <span class="c1"># to this vertex v</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">visited</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+ 
+                <span class="c1"># Update the list</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DFSUtil</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">visited</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">temp</span>
+ 
+    <span class="c1"># method to add an undirected edge</span>
+    <span class="k">def</span> <span class="nf">addEdge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">w</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+ 
+    <span class="c1"># Method to retrieve connected components</span>
+    <span class="c1"># in an undirected graph</span>
+    <span class="k">def</span> <span class="nf">connectedComponents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">visited</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cc</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">V</span><span class="p">):</span>
+            <span class="n">visited</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">V</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">visited</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">cc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DFSUtil</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">visited</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">cc</span>
+
+<span class="c1"># This code is contributed by Abhishek Valsan</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Erik Cheng.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

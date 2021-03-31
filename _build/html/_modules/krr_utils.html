@@ -1,0 +1,172 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>krr_utils &#8212; researchscripts 0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for krr_utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">dscribe.descriptors</span> <span class="kn">import</span> <span class="n">SOAP</span>
+
+<div class="viewcode-block" id="predictz"><a class="viewcode-back" href="../index.html#krr_utils.predictz">[docs]</a><span class="k">def</span> <span class="nf">predictz</span><span class="p">(</span><span class="n">surf</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">zmodel</span><span class="p">,</span> <span class="n">species</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    surf: bare substrate</span>
+<span class="sd">    x, y: position at which to place adsorbate</span>
+<span class="sd">    zmodel: model object</span>
+
+<span class="sd">    returns predicted z value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">searchR</span> <span class="o">=</span> <span class="mf">2.2</span>
+    <span class="n">surf</span> <span class="o">=</span> <span class="n">surf</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">add_adsorbate</span><span class="p">(</span><span class="n">surf</span><span class="p">,</span> <span class="s1">&#39;He&#39;</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+    <span class="n">maxz</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">surf</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">symbol</span> <span class="o">==</span> <span class="s2">&quot;He&quot;</span><span class="p">:</span> <span class="c1"># don&#39;t use He position to determine max Z position</span>
+            <span class="k">continue</span>
+        <span class="n">_x</span><span class="p">,</span> <span class="n">_y</span><span class="p">,</span> <span class="n">_z</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">position</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">_x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">_y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">&lt;</span> <span class="n">searchR</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_z</span> <span class="o">&gt;</span> <span class="n">maxz</span><span class="p">:</span>
+                <span class="n">maxz</span> <span class="o">=</span> <span class="n">_z</span> <span class="o">+</span> <span class="mf">2.5</span>
+
+    <span class="n">surf</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">maxz</span>
+
+    <span class="n">X</span> <span class="o">=</span> <span class="n">getSOAPs</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span> <span class="n">surf</span><span class="p">}),</span> <span class="n">species</span> <span class="o">=</span> <span class="n">species</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#reshape because just one sample</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">zmodel</span><span class="p">:</span>
+        <span class="n">predz</span> <span class="o">=</span> <span class="n">zmodel</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="c1">#       print(maxz, predz)</span>
+    <span class="k">else</span><span class="p">:</span>
+<span class="c1">#         TODO: implement me hehe</span>
+        <span class="n">predz</span> <span class="o">=</span> <span class="n">maxz</span> <span class="o">+</span> <span class="mf">2.5</span>
+    <span class="k">return</span> <span class="n">predz</span></div>
+
+<div class="viewcode-block" id="convertAdsorbateToHe"><a class="viewcode-back" href="../index.html#krr_utils.convertAdsorbateToHe">[docs]</a><span class="k">def</span> <span class="nf">convertAdsorbateToHe</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="n">centerIndex</span><span class="p">,</span> <span class="n">molIndices</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Preprocess final relaxed adsorption structures; replace adsorbate with He</span>
+<span class="sd">    Input:</span>
+<span class="sd">        struct: total structure (Atoms object)</span>
+<span class="sd">        centerIndex: index of central atom (where He will be) (int)</span>
+<span class="sd">        molIndices: list of indices to delete from the slab</span>
+<span class="sd">        height(float) : height of He to be placed</span>
+<span class="sd">    Output:</span>
+<span class="sd">        output: Atoms object with He representing the location of the adsorbate</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">struct</span><span class="p">[</span><span class="n">centerIndex</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">del</span> <span class="n">output</span><span class="p">[[</span><span class="n">atom</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">output</span> <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">index</span> <span class="ow">in</span> <span class="n">molIndices</span><span class="p">]]</span>
+    <span class="k">if</span> <span class="n">height</span><span class="p">:</span>
+        <span class="n">add_adsorbate</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s2">&quot;He&quot;</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">height</span><span class="p">,</span> <span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;He&quot;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">]))</span> <span class="c1"># adds to exact position of centeratom</span>
+    <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="getSOAPs"><a class="viewcode-back" href="../index.html#krr_utils.getSOAPs">[docs]</a><span class="k">def</span> <span class="nf">getSOAPs</span><span class="p">(</span><span class="n">geometries</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span>
+        <span class="n">rcut</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">nmax</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">lmax</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+             <span class="n">periodic</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">crossover</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">sparse</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes a Series of geometries with one He present,</span>
+<span class="sd">        returns SOAP representation of the chemical environment of He for each item</span>
+<span class="sd">    Assumes any given structure in `geometries` has the same collection of elements</span>
+<span class="sd">        as all the other structures</span>
+<span class="sd">    Assumes any given structure in `geometries` has the same number of atoms as all</span>
+<span class="sd">        the other structures</span>
+
+<span class="sd">    Input:</span>
+<span class="sd">        geometries: Series of Atoms objects; each must contain exactly 1 He atom</span>
+<span class="sd">        rcut, nmax, lmax, sigma, periodic, crossover, sparse: SOAP parameters</span>
+<span class="sd">    Output:</span>
+<span class="sd">        output: Series of SOAP matrices, each corresponding to the appropriate index</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="c1">#   refgeom = geometries.iloc[0] #use the first geometry as a reference geometry</span>
+
+    <span class="c1">## set up descriptor</span>
+<span class="c1">#   species = np.unique([i.symbol for i in refgeom])</span>
+    <span class="n">desc</span> <span class="o">=</span> <span class="n">SOAP</span><span class="p">(</span><span class="n">species</span><span class="o">=</span><span class="n">species</span><span class="p">,</span> <span class="n">rcut</span> <span class="o">=</span> <span class="n">rcut</span><span class="p">,</span> <span class="n">nmax</span> <span class="o">=</span> <span class="n">nmax</span><span class="p">,</span> <span class="n">lmax</span> <span class="o">=</span> <span class="n">lmax</span><span class="p">,</span>
+                <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">periodic</span> <span class="o">=</span> <span class="n">periodic</span><span class="p">,</span> <span class="n">crossover</span> <span class="o">=</span> <span class="n">crossover</span><span class="p">,</span> <span class="n">sparse</span> <span class="o">=</span> <span class="n">sparse</span><span class="p">)</span>
+    <span class="c1">## apply descriptor</span>
+    <span class="n">soaps</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">geom</span> <span class="ow">in</span> <span class="n">geometries</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="n">HeLoc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># assume He atom is last one in Atoms list</span>
+        <span class="n">tempSOAP</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span>
+            <span class="n">desc</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">positions</span> <span class="o">=</span> <span class="p">[</span><span class="n">HeLoc</span><span class="p">],</span> <span class="n">n_jobs</span> <span class="o">=</span> <span class="mi">4</span><span class="p">))</span> <span class="c1"># SOAP representation of temp</span>
+        <span class="n">soaps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">tempSOAP</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">soaps</span><span class="p">,</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;SOAP&#39;</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Erik Cheng.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
