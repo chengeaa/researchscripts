@@ -1,5 +1,7 @@
 from ase.io import gen
 import pandas as pd
+import numpy as np
+from ase.geometry.analysis import Analysis
 
 def getslab(struct):
     """
