@@ -21,9 +21,8 @@ def v_from_KE(E):
 
 def readStructs(datadir, shallow = True, name = "output"):
     """
-        Currently designed for output from single layer directory trees
-        Reads in final adsorption geometries and energy data,
-            returns dataframe with geometry and energy data
+        Currently designed for output from single layer directory trees.
+        Reads in final adsorption geometries and energy data, returns dataframe with geometry and energy data
 
         Input:
             datadir: string that points to directory containing the following:
@@ -32,6 +31,7 @@ def readStructs(datadir, shallow = True, name = "output"):
                 - output{indices}.gen: final geometries for each index
             slabEnergy: energy of slab
             adsorbateEnergy: energy of the adsorbate in the system
+
         Output:
             output: pd Dataframe with:
                 - index: indices for runs that worked

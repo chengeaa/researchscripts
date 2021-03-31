@@ -13,8 +13,6 @@ import random
 # scipy
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt,mpld3
-import seaborn as sns
 from pathlib import Path
 from scipy.optimize import curve_fit
 from scipy.interpolate import interp1d, interp2d
@@ -32,7 +30,6 @@ from ase.visualize import view
 from ase.build import make_supercell
 from ase.visualize.plot import plot_atoms
 from ase.build import add_adsorbate
-import nglview
 from ase.geometry.analysis import Analysis
 
 

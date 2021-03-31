@@ -13,7 +13,6 @@ from ase.visualize import view
 from ase.build import make_supercell
 from ase.visualize.plot import plot_atoms
 from ase.build import add_adsorbate
-import nglview
 from ase.geometry.analysis import Analysis
 
 
