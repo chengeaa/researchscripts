@@ -4,6 +4,8 @@
 Erik won't tell me what this does, so all I can say is that it parses the file passed in
 and writes some modified version to an outfile.
 
+(it translates cartesian positions to direct positions :P) 
+
 Args:
     POSCAR - filepath for POSCAR file
 

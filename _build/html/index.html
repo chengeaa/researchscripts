@@ -51,19 +51,8 @@
 <div class="section" id="module-agg2lammps">
 <span id="agg2lammps"></span><h2>agg2lammps<a class="headerlink" href="#module-agg2lammps" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-analysis">
-<span id="analysis"></span><h2>analysis<a class="headerlink" href="#module-analysis" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="analysis.coordLabeller">
-<code class="descclassname">analysis.</code><code class="descname">coordLabeller</code><span class="sig-paren">(</span><em>atoms</em>, <em>image</em>, <em>fullCoordinations={'F': 1</em>, <em>'H': 1</em>, <em>'N': 3</em>, <em>'Si': 4}</em>, <em>minAngles={'F': 360</em>, <em>'H': 360</em>, <em>'N': 109.5</em>, <em>'Si': 90}</em>, <em>maxBonds_per_element={'F': 1</em>, <em>'H': 1</em>, <em>'N': 4</em>, <em>'Si': 6}</em>, <em>angle_tolerance=0</em>, <em>bond_tolerance=0.5</em>, <em>minz=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/analysis.html#coordLabeller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analysis.coordLabeller" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Takes a structure, returns two dictionaries, the keys of which are identical:</dt>
-<dd>the index of the atom for which the statistic is calculated</dd>
-</dl>
-<p>relativeCoordinations: -1 if atom i is undercoordinated, 1 if overcoordinated, 0 else
-bonds: list of bonds for atom i</p>
-</dd></dl>
-
+<div class="section" id="analysis">
+<h2>analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-cart2dir">
 <span id="cart2dir"></span><h2>cart2dir<a class="headerlink" href="#module-cart2dir" title="Permalink to this headline">¶</a></h2>
@@ -218,41 +207,8 @@ data is the df from readData function or any df with (struct, in) and (struct, o
 <div class="section" id="module-translatepos">
 <span id="translatepos"></span><h2>translatepos<a class="headerlink" href="#module-translatepos" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-transmute">
-<span id="transmute"></span><h2>transmute<a class="headerlink" href="#module-transmute" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="transmute.transmute">
-<code class="descclassname">transmute.</code><code class="descname">transmute</code><span class="sig-paren">(</span><em>threshold, transmute=True, target='C', slabElems=['Si', 'N'], surfDepth=6, numStructs=-1, numOut=-1, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transmute.html#transmute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transmute.transmute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find undercoordinated surface/near-surface atoms and transmute them to C
-Inputs:</p>
-<blockquote>
-<div><p>threshold (k): maxiumum number of bonds to be considered “undercoordinated” (should be 1 or 2)
-transmute: whether to transmute elements or not 
-slabElems: elements to consider as part of the ‘core slab’; only these will be transmuted
-surfDepth: depth of atoms to consider below surface; surface defined as</p>
-<blockquote>
-<div>max z coord among slabElems</div></blockquote>
-<dl class="docutils">
-<dt>simple: Use basic bond counting as implemented in ASE, </dt>
-<dd>or advanced with coordLabeller from <cite>dependencies</cite> (simple=False is UNTESTED!!!)</dd>
-</dl>
-<p>numStructs: Number of structures to consider
-numOut: Number of structures to output
-<a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs: to be passed to the readStructs function from <cite>dependencies</cite></p>
-</div></blockquote>
-</dd></dl>
-
-<dl class="function">
-<dt id="transmute.write_transmuted">
-<code class="descclassname">transmute.</code><code class="descname">write_transmuted</code><span class="sig-paren">(</span><em>outdir</em>, <em>numout</em>, <em>numrep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transmute.html#write_transmuted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transmute.write_transmuted" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write results of transmute function into some directory
-numout corresponds the top <cite>numout</cite> structures to output
-numrep is the number of times to replicate each of the above structures,</p>
-<blockquote>
-<div>with random adjustment of last atom position (should be Ar for bomb)</div></blockquote>
-<p>files written in input$i-$j.gen format</p>
-</dd></dl>
-
+<div class="section" id="transmute">
+<h2>transmute<a class="headerlink" href="#transmute" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-trim">
 <span id="trim"></span><h2>trim<a class="headerlink" href="#module-trim" title="Permalink to this headline">¶</a></h2>
@@ -343,6 +299,18 @@ adsorbateEnergy: energy of the adsorbate in the system</p>
 <dt id="visualization.show_atoms_grid">
 <code class="descclassname">visualization.</code><code class="descname">show_atoms_grid</code><span class="sig-paren">(</span><em>data</em>, <em>rotation='-0x</em>, <em>0y</em>, <em>0z'</em>, <em>save=False</em>, <em>filename='grid_configs'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/visualization.html#show_atoms_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualization.show_atoms_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Where data is list of Atoms objects</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="visualization.viewStructs">
+<code class="descclassname">visualization.</code><code class="descname">viewStructs</code><span class="sig-paren">(</span><em>name</em>, <em>directory</em>, <em>kind='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/visualization.html#viewStructs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualization.viewStructs" title="Permalink to this definition">¶</a></dt>
+<dd><p>View collection of structures as a “trajectory”
+Args:</p>
+<blockquote>
+<div>name (str): substring unique to structures (.gen, POSCAR, slab, etc)
+directory (str): Directory where the structures live
+kind: kind of output froim list of (vasp, gen)</div></blockquote>
+<p>Opens viewer with loaded trajectory (if remote, need X server)</p>
 </dd></dl>
 
 </div>

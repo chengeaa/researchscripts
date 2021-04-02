@@ -1,4 +1,5 @@
 from ase.neighborlist import NewPrimitiveNeighborList, natural_cutoffs
+from utils import readStructs
 import numpy as np
 
 
@@ -66,3 +67,89 @@ def coordLabeller(atoms, image, fullCoordinations = {"Si": 4, "N":3, "H":1, "F":
     return relativeCoordinations, newBonds
 import numpy as np
 
+
+def analyzeFragments(datadir, **kwargs):
+    """
+        Pass in `name` and `shallow` kwargs if needed for utils.readStruct function
+    """
+    geometries = readStructs(datadir, **kwargs)
+    analyses = {key: Analysis(item) for key, item in geometries.items()}
+    analyses = pd.Series(analyses)
+
+    #####################
+    ### fragmentation ###
+    #####################
+
+    fragmentLists = []
+    for struct in geometries:
+        adjmat = Analysis(struct).adjacency_matrix[0]
+        numnodes = adjmat.shape[0]
+        g = Graph(numnodes)
+        for i in range(numnodes):
+            for j in range(numnodes):
+                if adjmat[i,j]:
+                    g.addEdge(i,j)
+        cc = g.connectedComponents()
+        isSmallgraph = np.array([len(i) for i in cc]) < 10
+        smallgraphs = []
+        for i, subgraph in enumerate(cc):
+            if isSmallgraph[i]:
+                smallgraphs += [struct[[atom.index for atom in struct if atom.index in subgraph]]]
+        fragmentLists += [smallgraphs]
+
+    flatten = lambda t: [item for sublist in t for item in sublist]
+    fragmentTypes = np.unique([i.symbols.get_chemical_formula() for i in flatten(fragmentLists)])
+    fragdict = {i:j for i, j in zip(geometries.keys(), fragmentLists)}
+
+    fragmentData = pd.DataFrame({key: [0] * len(geometries) for key in fragmentTypes})
+
+    fragmentData.index = fragdict.keys()
+
+    for key, fragmentList in fragdict.items():
+        for fragment in fragmentList:
+            _symbol = fragment.symbols.get_chemical_formula()
+            fragmentData[_symbol].loc[key] += 1
+    fragmentData.to_csv(datadir + "fragdata.csv")
+    print(fragmentData.sum(axis = 0))
+
+
+    ###################  
+    ### bond counts ###
+    ###################
+    
+    totalbonds = []
+    bondcounts = {}
+    e1 = "Si"
+    e2 = "N"
+    form = False
+    for key, analysis in analyses.items(): 
+        try:
+            totalbonds += [len(analysis.get_bonds(e1, e2, unique = True)[0])]
+            bondcounts[key] =  len(analysis.get_bonds(e1, e2, unique = True)[0])
+        except:
+            print('error on {}'.format(key))
+    totalbonds = np.array(totalbonds)
+    if form:
+        print('percent runs with {}-{} bond formation = {}'.format(e1, e2, np.sum(totalbonds > 0)/170))
+    else:
+        print('average number of final {}-{} bonds = {}'.format(e1, e2, np.sum(totalbonds)/170))
+    # plt.hist(totalbonds, bins = np.arange(0, np.max(totalbonds) + 1))
+    # plt.hist(totalbonds, bins = np.arange(5, 14))
+    if form:
+        plt.title('distribution of # of {}-{} bonds formed'.format(e1, e2));
+    else:
+        plt.title('distribution of # of {}-{} bonds count'.format(e1, e2));
+    plt.show()   
+
+    from itertools import combinations
+    elems = ["Si", "F", "N", "C", "H", "Ar"]
+
+    result = {}
+    for e1, e2 in combinations(elems, 2):
+        bondcounts = {}
+        for key, analysis in analyses.items(): 
+            bondcounts[key] =  len(analysis.get_bonds(e1, e2, unique = True)[0])
+        bondcounts = pd.Series(bondcounts)
+        result["{}-{}".format(e1, e2)] = bondcounts
+    pd.DataFrame(result).to_csv(datadir+"bondcounts.csv")
+fragmentData

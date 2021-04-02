@@ -1,7 +1,20 @@
+#imports
+
+#base
+import os
+import re
+
+#ase
+from ase.io import vasp, gen
+from ase.visualize.plot import plot_atoms
+from ase.visualize import view
+
+#scipy
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-from ase.visualize.plot import plot_atoms
+
+#functions
 
 def show_atoms_grid(data, rotation = '-0x,0y,0z', save= False, filename = 'grid_configs'):
     '''
@@ -13,6 +26,37 @@ def show_atoms_grid(data, rotation = '-0x,0y,0z', save= False, filename = 'grid_
         plot_atoms(config, axarr[i%dim,i//dim], rotation = rotation)
     if save:
         fig.savefig(filename + ".png")
+def viewStructs(name, directory, kind = 'gen'):
+    """
+    View collection of structures as a "trajectory"
+    Args:
+        name (str): substring unique to structures (.gen, POSCAR, slab, etc)
+        directory (str): Directory where the structures live
+        kind: kind of output froim list of (vasp, gen)
+    Opens viewer with loaded trajectory (if remote, need X server)
+    """
+    geometries = []
+    files = os.listdir(directory)
+
+    if kind == 'gen':
+        pattern = r"{}.*.gen".format(name)
+    elif kind == 'vasp':
+        pattern = r"{}".format(name)
+    else:
+        raise ValueError("file kind must be from (vasp, gen)")
+
+    for i in files:
+        key = re.search(pattern, i)
+
+        if key:
+            if kind == 'gen':
+                geometries +=  [gen.read_gen(directory + i)]
+            elif kind == 'vasp':
+                geometries +=  [vasp.read_vasp(datadir + i)]
+            else:
+                raise ValueError("file kind must be from (vasp, gen)")
+    view(geometries)
+
 
 def plotElemDist(data, targetElem = "C", latticeElems = ["Si", "N", "H"], nbins = 25, stacked = False):
     """
