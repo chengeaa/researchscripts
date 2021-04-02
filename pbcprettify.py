@@ -1,3 +1,6 @@
+"""
+Rewrap periodic images that had jumped in a trajectory for nicer visualization I think
+"""
 #!/usr/bin/env python
 import re
 import os

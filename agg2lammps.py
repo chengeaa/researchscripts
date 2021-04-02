@@ -1,3 +1,7 @@
+"""
+Write 'aggcar' (positions +  velocities) to a lammps file, for visualizing heat dissipation
+"""
+
 #!/usr/bin/env python
 import re
 import os

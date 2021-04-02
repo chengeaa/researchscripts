@@ -86,62 +86,69 @@ def getSOAPs(geometries, rcut = 5, nmax = 10, lmax = 9, sigma = 0.1,
 
 
 
+def main(basename):
+    """
+    Perform ML-based isotherm seeding.
 
-# load z prediction and E_ads prediction models (pickled KRR models)
-with open('models/zmodel.pkl', 'rb') as f:
-    zmodel = pickle.load(f)
+    Args:
+        basename: name of base slab
+    """
 
-with open('models/Emodel.pkl', 'rb') as f:
-    Emodel = pickle.load(f)
+    # load z prediction and E_ads prediction models (pickled KRR models)
+    with open('models/zmodel.pkl', 'rb') as f:
+        zmodel = pickle.load(f)
 
-
-# load base slab, remove extraneous atoms, and wrap
-base = gen.read_gen(basename) 
-del base[[atom.index for atom in base if atom.symbol in ['He', 'Ar']]]
-base.wrap()
-
-
-# generate regular grid based on cell parameters of slab
-a,b,c = base.cell
-a,b,c = np.linalg.norm(a), np.linalg.norm(b), np.linalg.norm(c)
-npoints = 20
-apoints = np.linspace(0, a, npoints) # regular spacing
-bpoints = np.linspace(0, b, npoints) # regular spacing
-
-# place He atoms in grid points
-gridpoints = []
-for apoint in apoints:
-    for bpoint in bpoints:
-        newstruct = base.copy()
-        zhat = predictz(newstruct, apoint, bpoint)
-        newstruct.append(Atom('He', position = (apoint, bpoint, zhat)))
-        gridpoints += [newstruct]
+    with open('models/Emodel.pkl', 'rb') as f:
+        Emodel = pickle.load(f)
 
 
-# generate pd df with data
-gridpoints = pd.Series(gridpoints)
-gridpoints = pd.DataFrame({'geom': gridpoints})
-gridpoints = pd.concat([gridpoints, getSOAPs(gridpoints['geom'])], axis = 1)
+    # load base slab, remove extraneous atoms, and wrap
+    base = gen.read_gen(basename) 
+    del base[[atom.index for atom in base if atom.symbol in ['He', 'Ar']]]
+    base.wrap()
 
-# data matrix for ML
-X = pd.DataFrame(gridpoints['SOAP'].to_list(), index = gridpoints.index)
 
-gridpoints['predE'] = Emodel.predict(X)
+    # generate regular grid based on cell parameters of slab
+    a,b,c = base.cell
+    a,b,c = np.linalg.norm(a), np.linalg.norm(b), np.linalg.norm(c)
+    npoints = 20
+    apoints = np.linspace(0, a, npoints) # regular spacing
+    bpoints = np.linspace(0, b, npoints) # regular spacing
 
-charges = np.append(np.zeros(len(base)), gridpoints['predE'])
-base.set_initial_charges(charges)
-for geom in gridpoints['geom']:
-    base.append(Atom("He", position = geom[-1].position))
+    # place He atoms in grid points
+    gridpoints = []
+    for apoint in apoints:
+        for bpoint in bpoints:
+            newstruct = base.copy()
+            zhat = predictz(newstruct, apoint, bpoint)
+            newstruct.append(Atom('He', position = (apoint, bpoint, zhat)))
+            gridpoints += [newstruct]
 
-# TODO adaptive sampling portion 
-if visualize:
-    view(visbase)
 
-    print("pearson r:", 
-    pearsonr([geom[-1].position[2] for geom in gridpoints['geom']],
-             gridpoints['predE']
-            )
-    )
+    # generate pd df with data
+    gridpoints = pd.Series(gridpoints)
+    gridpoints = pd.DataFrame({'geom': gridpoints})
+    gridpoints = pd.concat([gridpoints, getSOAPs(gridpoints['geom'])], axis = 1)
+
+    # data matrix for ML
+    X = pd.DataFrame(gridpoints['SOAP'].to_list(), index = gridpoints.index)
+
+    gridpoints['predE'] = Emodel.predict(X)
+
+    charges = np.append(np.zeros(len(base)), gridpoints['predE'])
+    base.set_initial_charges(charges)
+    for geom in gridpoints['geom']:
+        base.append(Atom("He", position = geom[-1].position))
+
+    # TODO adaptive sampling portion 
+    if visualize:
+        view(visbase)
+
+        print("pearson r:", 
+        pearsonr([geom[-1].position[2] for geom in gridpoints['geom']],
+                 gridpoints['predE']
+                )
+        )
 
 
 if __name__ == "__main__":

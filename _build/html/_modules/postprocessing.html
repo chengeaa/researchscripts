@@ -52,7 +52,7 @@
 <div class="viewcode-block" id="postprocessResults"><a class="viewcode-back" href="../index.html#postprocessing.postprocessResults">[docs]</a><span class="k">def</span> <span class="nf">postprocessResults</span><span class="p">(</span><span class="n">directory</span> <span class="o">=</span> <span class="s2">&quot;../&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Takes in a list of indices, corresponding to the bombardment trials to analyze</span>
-<span class="sd">        Looks for files named `results$i{bomb,quench,eq}.csv` in directory specified. </span>
+<span class="sd">        Looks for files named ``results$i{bomb,quench,eq}.csv`` in directory specified. </span>
 <span class="sd">        Returns list of 3 dfs; each one has elements and keys</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -71,7 +71,7 @@
 <div class="viewcode-block" id="postprocessAggregated"><a class="viewcode-back" href="../index.html#postprocessing.postprocessAggregated">[docs]</a><span class="k">def</span> <span class="nf">postprocessAggregated</span><span class="p">(</span><span class="n">simindices</span><span class="p">,</span> <span class="n">directory</span> <span class="o">=</span> <span class="s2">&quot;../&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Takes in a list of indices, corresponding to the bombardment trials to analyze</span>
-<span class="sd">        Looks for files named `aggregated_{bomb,quench,eq}$i` in directory specified. </span>
+<span class="sd">        Looks for files named ``aggregated_{bomb,quench,eq}$i`` in directory specified. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bombdata</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span> <span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">directory</span> <span class="o">+</span> <span class="s2">&quot;aggregated_bomb</span><span class="si">%d</span><span class="s2">.csv&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">simindices</span><span class="p">}</span>

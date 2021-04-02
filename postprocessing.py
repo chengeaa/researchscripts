@@ -4,7 +4,7 @@ import numpy as np
 def postprocessResults(directory = "../"):
     """
         Takes in a list of indices, corresponding to the bombardment trials to analyze
-        Looks for files named `results$i{bomb,quench,eq}.csv` in directory specified. 
+        Looks for files named ``results$i{bomb,quench,eq}.csv`` in directory specified. 
         Returns list of 3 dfs; each one has elements and keys
     """
 
@@ -23,7 +23,7 @@ def postprocessResults(directory = "../"):
 def postprocessAggregated(simindices, directory = "../"):
     """
         Takes in a list of indices, corresponding to the bombardment trials to analyze
-        Looks for files named `aggregated_{bomb,quench,eq}$i` in directory specified. 
+        Looks for files named ``aggregated_{bomb,quench,eq}$i`` in directory specified. 
     """
     bombdata = {i :pd.read_csv(directory + "aggregated_bomb%d.csv" % i, index_col=0) 
             for i in simindices}

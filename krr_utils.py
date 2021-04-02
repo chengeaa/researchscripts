@@ -36,13 +36,14 @@ def predictz(surf, x, y, zmodel, species):
 def convertAdsorbateToHe(struct, centerIndex, molIndices, height = None):
     """
     Preprocess final relaxed adsorption structures; replace adsorbate with He
-    Input:
-        struct: total structure (Atoms object)
-        centerIndex: index of central atom (where He will be) (int)
-        molIndices: list of indices to delete from the slab
-        height(float) : height of He to be placed
-    Output:
-        output: Atoms object with He representing the location of the adsorbate
+
+    Args:
+        - struct: total structure (Atoms object)
+        - centerIndex: index of central atom (where He will be) (int)
+        - molIndices: list of indices to delete from the slab
+        - height(float) : height of He to be placed
+    Returns:
+        - output: Atoms object with He representing the location of the adsorbate
     """
     x, y, z = struct[centerIndex].position
     output = struct.copy()
@@ -60,9 +61,9 @@ def getSOAPs(geometries, species,
     """
     Takes a Series of geometries with one He present,
         returns SOAP representation of the chemical environment of He for each item
-    Assumes any given structure in `geometries` has the same collection of elements
+    Assumes any given structure in ``geometries`` has the same collection of elements
         as all the other structures
-    Assumes any given structure in `geometries` has the same number of atoms as all
+    Assumes any given structure in ``geometries`` has the same number of atoms as all
         the other structures
 
     Input:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 '''
-Designed to work on the cluster, removing 'ejected species' after each equilibration step
+Designed to work on the cluster, removing 'ejected species' after each equilibration step seeding Ar 
 '''
 # imports 
 # base python

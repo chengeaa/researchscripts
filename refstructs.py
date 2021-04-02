@@ -1,6 +1,22 @@
+"""
+A collection of reference structures stored as Atoms objects.
+
+Includes:
+    - mef 
+    - cf4 
+    - amorphous 
+    - xtl_n 
+    - xtl_si 
+    - xtl2x2 
+    - xtl2x2_sifterm 
+    - heavy_bomb 
+    - bulk222 
+    - annealed 
+"""
 import os
 from ase.io import gen, vasp
 from inspect import getsourcefile
+
 
 ##############
 # structures #

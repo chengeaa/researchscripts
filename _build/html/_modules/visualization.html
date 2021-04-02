@@ -77,10 +77,12 @@
 <div class="viewcode-block" id="viewStructs"><a class="viewcode-back" href="../index.html#visualization.viewStructs">[docs]</a><span class="k">def</span> <span class="nf">viewStructs</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span> <span class="s1">&#39;gen&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    View collection of structures as a &quot;trajectory&quot;</span>
+
 <span class="sd">    Args:</span>
-<span class="sd">        name (str): substring unique to structures (.gen, POSCAR, slab, etc)</span>
-<span class="sd">        directory (str): Directory where the structures live</span>
-<span class="sd">        kind: kind of output froim list of (vasp, gen)</span>
+<span class="sd">        - name (str): substring unique to structures (.gen, POSCAR, slab, etc)</span>
+<span class="sd">        - directory (str): Directory where the structures live</span>
+<span class="sd">        - kind: kind of output froim list of (vasp, gen)</span>
+<span class="sd">        </span>
 <span class="sd">    Opens viewer with loaded trajectory (if remote, need X server)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">geometries</span> <span class="o">=</span> <span class="p">[]</span>

@@ -84,13 +84,14 @@
 <div class="viewcode-block" id="convertAdsorbateToHe"><a class="viewcode-back" href="../index.html#krr_utils.convertAdsorbateToHe">[docs]</a><span class="k">def</span> <span class="nf">convertAdsorbateToHe</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="n">centerIndex</span><span class="p">,</span> <span class="n">molIndices</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Preprocess final relaxed adsorption structures; replace adsorbate with He</span>
-<span class="sd">    Input:</span>
-<span class="sd">        struct: total structure (Atoms object)</span>
-<span class="sd">        centerIndex: index of central atom (where He will be) (int)</span>
-<span class="sd">        molIndices: list of indices to delete from the slab</span>
-<span class="sd">        height(float) : height of He to be placed</span>
-<span class="sd">    Output:</span>
-<span class="sd">        output: Atoms object with He representing the location of the adsorbate</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        - struct: total structure (Atoms object)</span>
+<span class="sd">        - centerIndex: index of central atom (where He will be) (int)</span>
+<span class="sd">        - molIndices: list of indices to delete from the slab</span>
+<span class="sd">        - height(float) : height of He to be placed</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        - output: Atoms object with He representing the location of the adsorbate</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">struct</span><span class="p">[</span><span class="n">centerIndex</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
     <span class="n">output</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -108,9 +109,9 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Takes a Series of geometries with one He present,</span>
 <span class="sd">        returns SOAP representation of the chemical environment of He for each item</span>
-<span class="sd">    Assumes any given structure in `geometries` has the same collection of elements</span>
+<span class="sd">    Assumes any given structure in ``geometries`` has the same collection of elements</span>
 <span class="sd">        as all the other structures</span>
-<span class="sd">    Assumes any given structure in `geometries` has the same number of atoms as all</span>
+<span class="sd">    Assumes any given structure in ``geometries`` has the same number of atoms as all</span>
 <span class="sd">        the other structures</span>
 
 <span class="sd">    Input:</span>

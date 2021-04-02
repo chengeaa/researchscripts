@@ -7,23 +7,22 @@ def transmute(threshold,
          target = "C",
          slabElems = ["Si", "N"], 
          surfDepth = 6,
-#          simple = True,
+         simple = True,
          numStructs = -1,
          numOut = -1,
          **kwargs):
     """
-        Find undercoordinated surface/near-surface atoms and transmute them to C
-        Inputs:
-            threshold (k): maxiumum number of bonds to be considered "undercoordinated" (should be 1 or 2)
-            transmute: whether to transmute elements or not 
-            slabElems: elements to consider as part of the 'core slab'; only these will be transmuted
-            surfDepth: depth of atoms to consider below surface; surface defined as 
-                max z coord among slabElems
-            simple: Use basic bond counting as implemented in ASE, 
-                or advanced with coordLabeller from `dependencies` (simple=False is UNTESTED!!!)
-            numStructs: Number of structures to consider
-            numOut: Number of structures to output
-            **kwargs: to be passed to the readStructs function from `dependencies`
+    Find undercoordinated surface/near-surface atoms and transmute them to C
+
+    Args:
+        - threshold (k): maxiumum number of bonds to be considered "undercoordinated" (should be 1 or 2)
+        - transmute: whether to transmute elements or not 
+        - slabElems: elements to consider as part of the 'core slab'; only these will be transmuted
+        - surfDepth: depth of atoms to consider below surface; surface defined as max z coord among slabElems
+        - simple: Use basic bond counting as implemented in ASE, or advanced with coordLabeller from `dependencies` (simple=False is UNTESTED!!!)
+        - numStructs: Number of structures to consider
+        - numOut: Number of structures to output
+        - kwargs: to be passed to the readStructs function from `dependencies`
     """
     simple = True # only support simple bond count for now 
     if numStructs > 0:
@@ -88,11 +87,11 @@ def transmute(threshold,
 
 def write_transmuted(outdir, numout, numrep):
     """
-        Write results of transmute function into some directory
-        numout corresponds the top `numout` structures to output
-        numrep is the number of times to replicate each of the above structures,
-            with random adjustment of last atom position (should be Ar for bomb)
-        files written in input$i-$j.gen format
+    Write results of transmute function into some directory
+    Args:
+    numout: the top `numout` structures to output
+    numrep: the number of times to replicate each of the above structures, with random adjustment of last atom position (should be Ar for bomb)
+    files written in input$i-$j.gen format
     """
     np.random.seed(429)
     for i, key in enumerate(output.index[:10]):

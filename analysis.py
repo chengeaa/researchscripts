@@ -11,8 +11,8 @@ def coordLabeller(atoms, image, fullCoordinations = {"Si": 4, "N":3, "H":1, "F":
                   minz = 0 #minimum height above which to compute
                  ):
     """
-    Takes a structure, returns two dictionaries, the keys of which are identical:
-        the index of the atom for which the statistic is calculated
+    Takes a structure, returns two dictionaries, the keys of which are identical: 
+    the index of the atom for which the statistic is calculated
     relativeCoordinations: -1 if atom i is undercoordinated, 1 if overcoordinated, 0 else
     bonds: list of bonds for atom i
     """
@@ -152,4 +152,3 @@ def analyzeFragments(datadir, **kwargs):
         bondcounts = pd.Series(bondcounts)
         result["{}-{}".format(e1, e2)] = bondcounts
     pd.DataFrame(result).to_csv(datadir+"bondcounts.csv")
-fragmentData

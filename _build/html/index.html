@@ -50,15 +50,32 @@
 </div>
 <div class="section" id="module-agg2lammps">
 <span id="agg2lammps"></span><h2>agg2lammps<a class="headerlink" href="#module-agg2lammps" title="Permalink to this headline">¶</a></h2>
+<p>Write ‘aggcar’ (positions +  velocities) to a lammps file, for visualizing heat dissipation</p>
 </div>
-<div class="section" id="analysis">
-<h2>analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-analysis">
+<span id="analysis"></span><h2>analysis<a class="headerlink" href="#module-analysis" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="analysis.analyzeFragments">
+<code class="descclassname">analysis.</code><code class="descname">analyzeFragments</code><span class="sig-paren">(</span><em>datadir</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/analysis.html#analyzeFragments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analysis.analyzeFragments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pass in <cite>name</cite> and <cite>shallow</cite> kwargs if needed for utils.readStruct function</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="analysis.coordLabeller">
+<code class="descclassname">analysis.</code><code class="descname">coordLabeller</code><span class="sig-paren">(</span><em>atoms</em>, <em>image</em>, <em>fullCoordinations={'F': 1</em>, <em>'H': 1</em>, <em>'N': 3</em>, <em>'Si': 4}</em>, <em>minAngles={'F': 360</em>, <em>'H': 360</em>, <em>'N': 109.5</em>, <em>'Si': 90}</em>, <em>maxBonds_per_element={'F': 1</em>, <em>'H': 1</em>, <em>'N': 4</em>, <em>'Si': 6}</em>, <em>angle_tolerance=0</em>, <em>bond_tolerance=0.5</em>, <em>minz=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/analysis.html#coordLabeller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analysis.coordLabeller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a structure, returns two dictionaries, the keys of which are identical: 
+the index of the atom for which the statistic is calculated
+relativeCoordinations: -1 if atom i is undercoordinated, 1 if overcoordinated, 0 else
+bonds: list of bonds for atom i</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-cart2dir">
 <span id="cart2dir"></span><h2>cart2dir<a class="headerlink" href="#module-cart2dir" title="Permalink to this headline">¶</a></h2>
 <p>Performs some kind of parsing on POSCAR file!…?</p>
 <p>Erik won’t tell me what this does, so all I can say is that it parses the file passed in
 and writes some modified version to an outfile.</p>
+<p>(it translates cartesian positions to direct positions :P)</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd>POSCAR - filepath for POSCAR file</dd>
@@ -91,24 +108,26 @@ array of values for that statistic from each ionic loop.</p>
 <span id="genvis"></span><h2>genvis<a class="headerlink" href="#module-genvis" title="Permalink to this headline">¶</a></h2>
 <p>View .gen file</p>
 </div>
-<div class="section" id="gridding">
-<h2>gridding<a class="headerlink" href="#gridding" title="Permalink to this headline">¶</a></h2>
-</div>
 <div class="section" id="module-krr_utils">
 <span id="krr-utils"></span><h2>krr_utils<a class="headerlink" href="#module-krr_utils" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="krr_utils.convertAdsorbateToHe">
 <code class="descclassname">krr_utils.</code><code class="descname">convertAdsorbateToHe</code><span class="sig-paren">(</span><em>struct</em>, <em>centerIndex</em>, <em>molIndices</em>, <em>height=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krr_utils.html#convertAdsorbateToHe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#krr_utils.convertAdsorbateToHe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Preprocess final relaxed adsorption structures; replace adsorbate with He
-Input:</p>
-<blockquote>
-<div>struct: total structure (Atoms object)
-centerIndex: index of central atom (where He will be) (int)
-molIndices: list of indices to delete from the slab
-height(float) : height of He to be placed</div></blockquote>
+<dd><p>Preprocess final relaxed adsorption structures; replace adsorbate with He</p>
 <dl class="docutils">
-<dt>Output:</dt>
-<dd>output: Atoms object with He representing the location of the adsorbate</dd>
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li>struct: total structure (Atoms object)</li>
+<li>centerIndex: index of central atom (where He will be) (int)</li>
+<li>molIndices: list of indices to delete from the slab</li>
+<li>height(float) : height of He to be placed</li>
+</ul>
+</dd>
+<dt>Returns:</dt>
+<dd><ul class="first last simple">
+<li>output: Atoms object with He representing the location of the adsorbate</li>
+</ul>
+</dd>
 </dl>
 </dd></dl>
 
@@ -118,9 +137,9 @@ height(float) : height of He to be placed</div></blockquote>
 <dd><dl class="docutils">
 <dt>Takes a Series of geometries with one He present,</dt>
 <dd>returns SOAP representation of the chemical environment of He for each item</dd>
-<dt>Assumes any given structure in <cite>geometries</cite> has the same collection of elements</dt>
+<dt>Assumes any given structure in <code class="docutils literal"><span class="pre">geometries</span></code> has the same collection of elements</dt>
 <dd>as all the other structures</dd>
-<dt>Assumes any given structure in <cite>geometries</cite> has the same number of atoms as all</dt>
+<dt>Assumes any given structure in <code class="docutils literal"><span class="pre">geometries</span></code> has the same number of atoms as all</dt>
 <dd>the other structures</dd>
 <dt>Input:</dt>
 <dd>geometries: Series of Atoms objects; each must contain exactly 1 He atom
@@ -142,18 +161,58 @@ zmodel: model object</p>
 </div>
 <div class="section" id="module-latticeconstmod">
 <span id="latticeconstmod"></span><h2>latticeconstmod<a class="headerlink" href="#module-latticeconstmod" title="Permalink to this headline">¶</a></h2>
+<p>Modify lattice constants without modifying atom positions, useful for adding vacuum</p>
 </div>
 <div class="section" id="module-measure_damage_depth">
 <span id="measure-damage-depth"></span><h2>measure_damage_depth<a class="headerlink" href="#module-measure_damage_depth" title="Permalink to this headline">¶</a></h2>
+<p>Meausre depth of damage induced by ion bombardment</p>
 </div>
 <div class="section" id="module-pbcprettify">
 <span id="pbcprettify"></span><h2>pbcprettify<a class="headerlink" href="#module-pbcprettify" title="Permalink to this headline">¶</a></h2>
+<p>Rewrap periodic images that had jumped in a trajectory for nicer visualization I think</p>
 </div>
 <div class="section" id="module-periodicprocess">
 <span id="periodicprocess"></span><h2>periodicprocess<a class="headerlink" href="#module-periodicprocess" title="Permalink to this headline">¶</a></h2>
+<p>Not sure what this does honestly</p>
 </div>
-<div class="section" id="placeadsorbates">
-<h2>placeadsorbates<a class="headerlink" href="#placeadsorbates" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-placeadsorbates">
+<span id="placeadsorbates"></span><h2>placeadsorbates<a class="headerlink" href="#module-placeadsorbates" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="placeadsorbates.getSOAPs">
+<code class="descclassname">placeadsorbates.</code><code class="descname">getSOAPs</code><span class="sig-paren">(</span><em>geometries</em>, <em>rcut=5</em>, <em>nmax=10</em>, <em>lmax=9</em>, <em>sigma=0.1</em>, <em>periodic=True</em>, <em>crossover=True</em>, <em>sparse=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/placeadsorbates.html#getSOAPs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#placeadsorbates.getSOAPs" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Takes a Series of geometries with one He present,</dt>
+<dd>returns SOAP representation of the chemical environment of He for each item</dd>
+<dt>Assumes any given structure in <cite>geometries</cite> has the same collection of elements</dt>
+<dd>as all the other structures</dd>
+<dt>Assumes any given structure in <cite>geometries</cite> has the same number of atoms as all</dt>
+<dd>the other structures</dd>
+<dt>Input:</dt>
+<dd>geometries: Series of Atoms objects; each must contain exactly 1 He atom
+rcut, nmax, lmax, sigma, periodic, crossover, sparse: SOAP parameters</dd>
+<dt>Output:</dt>
+<dd>output: Series of SOAP matrices, each corresponding to the appropriate index</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="placeadsorbates.main">
+<code class="descclassname">placeadsorbates.</code><code class="descname">main</code><span class="sig-paren">(</span><em>basename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/placeadsorbates.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#placeadsorbates.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform ML-based isotherm seeding.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>basename: name of base slab</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="placeadsorbates.predictz">
+<code class="descclassname">placeadsorbates.</code><code class="descname">predictz</code><span class="sig-paren">(</span><em>surf</em>, <em>x</em>, <em>y</em>, <em>zmodel='zmodel.pkl'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/placeadsorbates.html#predictz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#placeadsorbates.predictz" title="Permalink to this definition">¶</a></dt>
+<dd><p>surf: bare substrate
+x, y: position at which to place adsorbate
+zmodel: Path object pointing to the model pickle</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-postprocessing">
 <span id="postprocessing"></span><h2>postprocessing<a class="headerlink" href="#module-postprocessing" title="Permalink to this headline">¶</a></h2>
@@ -161,27 +220,45 @@ zmodel: model object</p>
 <dt id="postprocessing.postprocessAggregated">
 <code class="descclassname">postprocessing.</code><code class="descname">postprocessAggregated</code><span class="sig-paren">(</span><em>simindices</em>, <em>directory='../'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/postprocessing.html#postprocessAggregated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#postprocessing.postprocessAggregated" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes in a list of indices, corresponding to the bombardment trials to analyze
-Looks for files named <cite>aggregated_{bomb,quench,eq}$i</cite> in directory specified.</p>
+Looks for files named <code class="docutils literal"><span class="pre">aggregated_{bomb,quench,eq}$i</span></code> in directory specified.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="postprocessing.postprocessResults">
 <code class="descclassname">postprocessing.</code><code class="descname">postprocessResults</code><span class="sig-paren">(</span><em>directory='../'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/postprocessing.html#postprocessResults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#postprocessing.postprocessResults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes in a list of indices, corresponding to the bombardment trials to analyze
-Looks for files named <cite>results$i{bomb,quench,eq}.csv</cite> in directory specified. 
+Looks for files named <code class="docutils literal"><span class="pre">results$i{bomb,quench,eq}.csv</span></code> in directory specified. 
 Returns list of 3 dfs; each one has elements and keys</p>
 </dd></dl>
 
 </div>
 <div class="section" id="module-random_velos">
 <span id="random-velos"></span><h2>random_velos<a class="headerlink" href="#module-random_velos" title="Permalink to this headline">¶</a></h2>
+<p>Rewrite a given set of CONTCARs to give bombarding ion random velocity direction</p>
 </div>
 <div class="section" id="module-refstructs">
 <span id="refstructs"></span><h2>refstructs<a class="headerlink" href="#module-refstructs" title="Permalink to this headline">¶</a></h2>
+<p>A collection of reference structures stored as Atoms objects.</p>
+<dl class="docutils">
+<dt>Includes:</dt>
+<dd><ul class="first last simple">
+<li>mef</li>
+<li>cf4</li>
+<li>amorphous</li>
+<li>xtl_n</li>
+<li>xtl_si</li>
+<li>xtl2x2</li>
+<li>xtl2x2_sifterm</li>
+<li>heavy_bomb</li>
+<li>bulk222</li>
+<li>annealed</li>
+</ul>
+</dd>
+</dl>
 </div>
 <div class="section" id="module-seed_monolayer">
 <span id="seed-monolayer"></span><h2>seed_monolayer<a class="headerlink" href="#module-seed_monolayer" title="Permalink to this headline">¶</a></h2>
-<p>Designed to work on the cluster, removing ‘ejected species’ after each equilibration step</p>
+<p>Designed to work on the cluster, seeding a monolayer of some given adsdorbate based on KRR models</p>
 </div>
 <div class="section" id="module-structure">
 <span id="structure"></span><h2>structure<a class="headerlink" href="#module-structure" title="Permalink to this headline">¶</a></h2>
@@ -206,9 +283,40 @@ data is the df from readData function or any df with (struct, in) and (struct, o
 </div>
 <div class="section" id="module-translatepos">
 <span id="translatepos"></span><h2>translatepos<a class="headerlink" href="#module-translatepos" title="Permalink to this headline">¶</a></h2>
+<p>Translate a POSCAR some amount in x,y,z directions for easier visualization</p>
 </div>
-<div class="section" id="transmute">
-<h2>transmute<a class="headerlink" href="#transmute" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-transmute">
+<span id="transmute"></span><h2>transmute<a class="headerlink" href="#module-transmute" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="transmute.transmute">
+<code class="descclassname">transmute.</code><code class="descname">transmute</code><span class="sig-paren">(</span><em>threshold, transmute=True, target='C', slabElems=['Si', 'N'], surfDepth=6, simple=True, numStructs=-1, numOut=-1, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transmute.html#transmute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transmute.transmute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find undercoordinated surface/near-surface atoms and transmute them to C</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li>threshold (k): maxiumum number of bonds to be considered “undercoordinated” (should be 1 or 2)</li>
+<li>transmute: whether to transmute elements or not</li>
+<li>slabElems: elements to consider as part of the ‘core slab’; only these will be transmuted</li>
+<li>surfDepth: depth of atoms to consider below surface; surface defined as max z coord among slabElems</li>
+<li>simple: Use basic bond counting as implemented in ASE, or advanced with coordLabeller from <cite>dependencies</cite> (simple=False is UNTESTED!!!)</li>
+<li>numStructs: Number of structures to consider</li>
+<li>numOut: Number of structures to output</li>
+<li>kwargs: to be passed to the readStructs function from <cite>dependencies</cite></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="transmute.write_transmuted">
+<code class="descclassname">transmute.</code><code class="descname">write_transmuted</code><span class="sig-paren">(</span><em>outdir</em>, <em>numout</em>, <em>numrep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transmute.html#write_transmuted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transmute.write_transmuted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write results of transmute function into some directory
+Args:
+numout: the top <cite>numout</cite> structures to output
+numrep: the number of times to replicate each of the above structures, with random adjustment of last atom position (should be Ar for bomb)
+files written in input$i-$j.gen format</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-trim">
 <span id="trim"></span><h2>trim<a class="headerlink" href="#module-trim" title="Permalink to this headline">¶</a></h2>
@@ -216,7 +324,7 @@ data is the df from readData function or any df with (struct, in) and (struct, o
 </div>
 <div class="section" id="module-trimandseed">
 <span id="trimandseed"></span><h2>trimandseed<a class="headerlink" href="#module-trimandseed" title="Permalink to this headline">¶</a></h2>
-<p>Designed to work on the cluster, removing ‘ejected species’ after each equilibration step</p>
+<p>Designed to work on the cluster, removing ‘ejected species’ after each equilibration step seeding Ar</p>
 </div>
 <div class="section" id="module-utils">
 <span id="utils"></span><h2>utils<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h2>
@@ -304,12 +412,16 @@ adsorbateEnergy: energy of the adsorbate in the system</p>
 <dl class="function">
 <dt id="visualization.viewStructs">
 <code class="descclassname">visualization.</code><code class="descname">viewStructs</code><span class="sig-paren">(</span><em>name</em>, <em>directory</em>, <em>kind='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/visualization.html#viewStructs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualization.viewStructs" title="Permalink to this definition">¶</a></dt>
-<dd><p>View collection of structures as a “trajectory”
-Args:</p>
-<blockquote>
-<div>name (str): substring unique to structures (.gen, POSCAR, slab, etc)
-directory (str): Directory where the structures live
-kind: kind of output froim list of (vasp, gen)</div></blockquote>
+<dd><p>View collection of structures as a “trajectory”</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><ul class="first last simple">
+<li>name (str): substring unique to structures (.gen, POSCAR, slab, etc)</li>
+<li>directory (str): Directory where the structures live</li>
+<li>kind: kind of output froim list of (vasp, gen)</li>
+</ul>
+</dd>
+</dl>
 <p>Opens viewer with loaded trajectory (if remote, need X server)</p>
 </dd></dl>
 
@@ -330,6 +442,37 @@ kind: kind of output froim list of (vasp, gen)</div></blockquote>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to researchscripts’s documentation!</a><ul>
+<li><a class="reference internal" href="#module-agg2lammps">agg2lammps</a></li>
+<li><a class="reference internal" href="#module-analysis">analysis</a></li>
+<li><a class="reference internal" href="#module-cart2dir">cart2dir</a></li>
+<li><a class="reference internal" href="#module-energyanimator">energyanimator</a></li>
+<li><a class="reference internal" href="#module-gen2pos">gen2pos</a></li>
+<li><a class="reference internal" href="#module-genvis">genvis</a></li>
+<li><a class="reference internal" href="#module-krr_utils">krr_utils</a></li>
+<li><a class="reference internal" href="#module-latticeconstmod">latticeconstmod</a></li>
+<li><a class="reference internal" href="#module-measure_damage_depth">measure_damage_depth</a></li>
+<li><a class="reference internal" href="#module-pbcprettify">pbcprettify</a></li>
+<li><a class="reference internal" href="#module-periodicprocess">periodicprocess</a></li>
+<li><a class="reference internal" href="#module-placeadsorbates">placeadsorbates</a></li>
+<li><a class="reference internal" href="#module-postprocessing">postprocessing</a></li>
+<li><a class="reference internal" href="#module-random_velos">random_velos</a></li>
+<li><a class="reference internal" href="#module-refstructs">refstructs</a></li>
+<li><a class="reference internal" href="#module-seed_monolayer">seed_monolayer</a></li>
+<li><a class="reference internal" href="#module-structure">structure</a></li>
+<li><a class="reference internal" href="#module-translatepos">translatepos</a></li>
+<li><a class="reference internal" href="#module-transmute">transmute</a></li>
+<li><a class="reference internal" href="#module-trim">trim</a></li>
+<li><a class="reference internal" href="#module-trimandseed">trimandseed</a></li>
+<li><a class="reference internal" href="#module-utils">utils</a></li>
+<li><a class="reference internal" href="#module-visualization">visualization</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">

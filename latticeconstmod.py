@@ -1,3 +1,7 @@
+"""
+Modify lattice constants without modifying atom positions, useful for adding vacuum
+"""
+
 #!/usr/bin/env python
 import re
 import os

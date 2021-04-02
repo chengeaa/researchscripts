@@ -1,3 +1,7 @@
+"""
+Translate a POSCAR some amount in x,y,z directions for easier visualization
+"""
+
 #!/usr/bin/env python
 import re
 import os

@@ -40,11 +40,6 @@ genvis
 .. automodule:: genvis 
    :members:
 
-gridding 
------------------------------
-.. automodule:: gridding 
-   :members:
-
 krr_utils 
 -----------------------------
 .. automodule:: krr_utils 
@@ -88,7 +83,6 @@ random_velos
 refstructs 
 -----------------------------
 .. automodule:: refstructs 
-   :members:
 
 seed_monolayer 
 -----------------------------

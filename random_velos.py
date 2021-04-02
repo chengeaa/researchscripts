@@ -1,3 +1,7 @@
+"""
+Rewrite a given set of CONTCARs to give bombarding ion random velocity direction
+"""
+
 import sys
 import os
 import numpy as np

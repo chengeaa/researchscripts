@@ -1,3 +1,7 @@
+"""
+Meausre depth of damage induced by ion bombardment
+"""
+
 #!/usr/bin/env python
 import re
 import os

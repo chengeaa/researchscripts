@@ -29,10 +29,12 @@ def show_atoms_grid(data, rotation = '-0x,0y,0z', save= False, filename = 'grid_
 def viewStructs(name, directory, kind = 'gen'):
     """
     View collection of structures as a "trajectory"
+
     Args:
-        name (str): substring unique to structures (.gen, POSCAR, slab, etc)
-        directory (str): Directory where the structures live
-        kind: kind of output froim list of (vasp, gen)
+        - name (str): substring unique to structures (.gen, POSCAR, slab, etc)
+        - directory (str): Directory where the structures live
+        - kind: kind of output froim list of (vasp, gen)
+        
     Opens viewer with loaded trajectory (if remote, need X server)
     """
     geometries = []
