@@ -54,7 +54,7 @@ def viewStructs(name, directory, kind = 'gen'):
             if kind == 'gen':
                 geometries +=  [gen.read_gen(directory + i)]
             elif kind == 'vasp':
-                geometries +=  [vasp.read_vasp(datadir + i)]
+                geometries +=  [vasp.read_vasp(directory + i)]
             else:
                 raise ValueError("file kind must be from (vasp, gen)")
     view(geometries)

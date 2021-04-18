@@ -108,6 +108,47 @@ array of values for that statistic from each ionic loop.</p>
 <span id="genvis"></span><h2>genvis<a class="headerlink" href="#module-genvis" title="Permalink to this headline">¶</a></h2>
 <p>View .gen file</p>
 </div>
+<div class="section" id="module-input_generation">
+<span id="input-generation"></span><h2>input_generation<a class="headerlink" href="#module-input_generation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="input_generation.gridVasp">
+<code class="descclassname">input_generation.</code><code class="descname">gridVasp</code><span class="sig-paren">(</span><em>adsorbate</em>, <em>slab</em>, <em>directory='tempout/'</em>, <em>spacing=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/input_generation.html#gridVasp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#input_generation.gridVasp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in slab, adsorbate, and desired output directory.
+Writes numbered POSCAR files to output directory with adsorbate 
+placed in grid pattern</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>adsorbate: either path (str) for POS/CONTCAR or Atoms obj
+slab: either path (str) for POS/CONTCAR or Atoms obj
+directory: path (str) for desired output location
+spacing: spacing between grid points (eg, 0.2 is a 5x5 grid)</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="input_generation.randomGrid">
+<code class="descclassname">input_generation.</code><code class="descname">randomGrid</code><span class="sig-paren">(</span><em>adsorbate</em>, <em>slab</em>, <em>h=2</em>, <em>outputDir='tempout/'</em>, <em>numDirs=10</em>, <em>runsPerDir=17</em>, <em>shallow=False</em>, <em>kind='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/input_generation.html#randomGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#input_generation.randomGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a collection of structures with adsorbate randomly placed on 
+given slab. 
+Writes .gen outputs to desired directory</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>adsorbate: Atoms obj of adsorbate
+slab: Atoms obj of slab
+h: height of adsorbate (above max slab position)
+outputDir: Path (str) for desired output location.
+numDirs: Number of batches. Defaults to 10.
+runsPerDir: Number of sims per batch. Defaults to 17.
+shallow: If all runs to be at one directory level. Defaults to False.
+kind: output desired, from (gen, vasp). Defaults to gen.</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-krr_utils">
 <span id="krr-utils"></span><h2>krr_utils<a class="headerlink" href="#module-krr_utils" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -451,6 +492,7 @@ adsorbateEnergy: energy of the adsorbate in the system</p>
 <li><a class="reference internal" href="#module-energyanimator">energyanimator</a></li>
 <li><a class="reference internal" href="#module-gen2pos">gen2pos</a></li>
 <li><a class="reference internal" href="#module-genvis">genvis</a></li>
+<li><a class="reference internal" href="#module-input_generation">input_generation</a></li>
 <li><a class="reference internal" href="#module-krr_utils">krr_utils</a></li>
 <li><a class="reference internal" href="#module-latticeconstmod">latticeconstmod</a></li>
 <li><a class="reference internal" href="#module-measure_damage_depth">measure_damage_depth</a></li>

@@ -40,6 +40,11 @@ genvis
 .. automodule:: genvis 
    :members:
 
+input_generation 
+-----------------------------
+.. automodule:: input_generation 
+   :members:
+
 krr_utils 
 -----------------------------
 .. automodule:: krr_utils 

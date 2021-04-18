@@ -3,11 +3,11 @@ from utils import readStructs
 import numpy as np
 
 
-def coordLabeller(atoms, image, fullCoordinations = {"Si": 4, "N":3, "H":1, "F": 1},
+def coordLabeller(atoms, fullCoordinations = {"Si": 4, "N":3, "H":1, "F": 1},
                   minAngles = {"Si": 90, "N": 109.5, "H": 360, "F": 360}, # 360 for atoms with max 1 bond
                   maxBonds_per_element = {"Si": 6, "N":4, "H":1, "F":1},
-                  angle_tolerance = 0, #tolerance for valid bond angles
-                  bond_tolerance = 0.5, #tolerance for valid bond angles
+                  angle_tolerance = 0.15, #tolerance for valid bond angles
+                  bond_tolerance = 0.25, #tolerance for valid bond angles
                   minz = 0 #minimum height above which to compute
                  ):
     """
@@ -15,6 +15,7 @@ def coordLabeller(atoms, image, fullCoordinations = {"Si": 4, "N":3, "H":1, "F":
     the index of the atom for which the statistic is calculated
     relativeCoordinations: -1 if atom i is undercoordinated, 1 if overcoordinated, 0 else
     bonds: list of bonds for atom i
+    Defaults for angle and bond tolerance based on amorphous SiN
     """
     nl = NewPrimitiveNeighborList(
         cutoffs = np.array(natural_cutoffs(atoms)) * (bond_tolerance + 1),
@@ -36,7 +37,6 @@ def coordLabeller(atoms, image, fullCoordinations = {"Si": 4, "N":3, "H":1, "F":
         maxBonds = maxBonds_per_element[atom.symbol]
 
         bonds = sorted(bonds,
-#                        key = lambda b: atomAnalysis.get_bond_value(image, [idx, b]),
                        key = lambda b: atoms.get_distance(idx, b, mic = True),
                        reverse = False) #sort bonds list in ascending order of bond length
         keptBonds = set()
@@ -49,7 +49,6 @@ def coordLabeller(atoms, image, fullCoordinations = {"Si": 4, "N":3, "H":1, "F":
             for i, bond1 in enumerate(bonds[1:]): # iterate over every detected bond except shortest
                 angles = np.array([])
                 for j, bond2 in enumerate(keptBonds): # compare to bonds we've already seen
-#                     angles = np.append(angles, atomAnalysis.get_angle_value(image, [bond1, idx, bond2]))
                     angles = np.append(angles, atoms.get_angle(bond1, idx, bond2, mic = True))
 
                 if np.all(angles > minAngle):
@@ -65,7 +64,6 @@ def coordLabeller(atoms, image, fullCoordinations = {"Si": 4, "N":3, "H":1, "F":
             relativeCoordinations[idx] = 0
         newBonds[idx] = keptBonds
     return relativeCoordinations, newBonds
-import numpy as np
 
 
 def analyzeFragments(datadir, **kwargs):
