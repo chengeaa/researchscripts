@@ -10,6 +10,8 @@ from ase.visualize.plot import plot_atoms
 from ase.visualize import view
 
 #scipy
+import pandas as pd
+import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
@@ -91,3 +93,32 @@ def plotElemDist(data, targetElem = "C", latticeElems = ["Si", "N", "H"], nbins 
 
     plt.legend()
     plt.show()
+
+def getabBondcountStructure(data, idx, element):
+    """
+    Gets a struture with 'charges' equal to nbonds between a (fixed) and b(``element``) 
+    data needs geom, coordlabels, and (optionally) wantedIndices columns
+    geom is Atoms object of structure
+    coordlabels is a raw output from the coordlabeller function (relcoords and raw bonds)
+    element is desired secondary element (primary element determined by input)
+    Calls view() on resulting geometry
+    Returns the structure
+    """
+    coordlabels = data.loc[idx, 'coordlabels']
+    geometry = data.loc[idx, 'geom']
+    if 'wantedIndices' in data:
+        indices = data.loc[idx, 'wantedIndices']
+    else:
+        indices = np.arange(len(geometry))
+    
+    bondcounts = {key: np.sum(
+            np.array([geometry[i].symbol for i in value]) == element
+        ) for key, value in 
+         pd.Series(coordlabels[1])[indices].items()
+        }
+    charges = [0] * len(geometry)
+    for i in range(len(charges)):
+        charges[i] = bondcounts.get(i, -1)
+    geometry.set_initial_charges(charges)
+    view(geometry)
+    return geometry

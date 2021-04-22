@@ -1,4 +1,7 @@
 from dscribe.descriptors import SOAP
+from sklearn import preprocessing
+from ase import Atom, Atoms
+import pandas as pd
 
 def predictz(surf, x, y, zmodel, species):
     """
