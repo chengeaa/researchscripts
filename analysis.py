@@ -1,6 +1,11 @@
 from ase.neighborlist import NewPrimitiveNeighborList, natural_cutoffs
 from utils import readStructs
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
+
 import numpy as np
+import pandas as pd
 
 
 def coordLabeller(atoms, fullCoordinations = {"Si": 4, "N":3, "H":1, "F": 1},
@@ -150,3 +155,81 @@ def analyzeFragments(datadir, **kwargs):
         bondcounts = pd.Series(bondcounts)
         result["{}-{}".format(e1, e2)] = bondcounts
     pd.DataFrame(result).to_csv(datadir+"bondcounts.csv")
+
+
+
+def plotBondDistributionComposition(data, a='Si', b='N'):
+    """
+    Requires ``data``, a pd df with 'geom', 'coordlabels', and (optionally) 'wantedIndices'
+    Gives overall distribution and percent makeup of elements A and B in that distribution
+    """
+    if 'wantedIndices' in data.columns:
+        sibonds = pd.Series({idx:
+            [(
+                np.array([data['geom'][idx][i].symbol for i in value])
+            ) for key, value in
+             pd.Series(data['coordlabels'][idx][1])[data['wantedIndices'][idx]].items()
+            ]
+         for idx in data.index
+        })
+    else:
+        sibonds = pd.Series({idx:
+            [(
+                np.array([data['geom'][idx][i].symbol for i in value])
+            ) for key, value in
+             pd.Series(data['coordlabels'][idx][1]).items()
+            ]
+         for idx in data.index
+        })
+
+    nfrac = np.zeros(7)
+    sifrac = np.zeros(7)
+    ndatapoints = np.zeros(7)
+
+    for key, item in sibonds.items():
+        for i in item:
+            idx = len(i)
+            ndatapoints[idx] += 1
+            nfrac[idx] += np.sum(np.array(i) == a)/idx
+            sifrac[idx] += np.sum(np.array(i) == b)/idx
+    ndatapoints = np.array([i if i > 0 else 1 for i in ndatapoints])
+    nfrac /= ndatapoints
+    sifrac /= ndatapoints
+
+    mask = np.array([i > 10 for i in ndatapoints])
+    nfrac, sifrac, ndatapoints = nfrac[mask], sifrac[mask], ndatapoints[mask]
+
+
+    plt.figure(figsize = (10,5))
+    plt.hist(
+        [i for sublist in
+            pd.Series({idx:
+                [len(
+                    np.array([data['geom'][idx][i].symbol for i in value])
+                ) for key, value in
+                 pd.Series(data['coordlabels'][idx][1])[data['wantedIndices'][idx]].items()
+                ]
+             for idx in data.index
+            })
+         for i in sublist], bins = np.arange(7), density = True, label = 'total density'
+    );
+    plt.plot(np.arange(7)[mask], nfrac, marker = 'o', label = '{} fraction'.format(a))
+    plt.plot(np.arange(7)[mask], sifrac, marker = 'o', label = '{} fraction'.format(b))
+    plt.title("Normed hist of bond counts with {}/{} fraction".format(a,b))
+    plt.legend()
+
+
+def getBondSubset(data, elem):
+    """
+    Requires ``data`` pd df that has columns 'geom', 'coordlabels', 'wantedIndices'
+    Returns pd Series with the subsetted bond counts of (A, elem) where A should be set by the input wantedIndices
+    """
+    result = pd.Series({idx: 
+        [np.sum(
+            np.array([data['geom'][idx][i].symbol for i in value]) == elem
+        ) for key, value in 
+         pd.Series(data['coordlabels'][idx][1])[data['wantedIndices'][idx]].items()
+        ]
+     for idx in data.index
+    })
+    return result

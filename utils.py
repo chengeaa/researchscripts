@@ -11,6 +11,12 @@ def normalize(y,x):
     """
     return y/np.trapz(y,x)
 
+def flatten(l):
+    """
+    flattens a 2d list
+    """
+    return [item for sublist in l for item in sublist] 
+
 def KE(v_tot):
     """
     Returns KE of Ar+ in eV given total velocity
@@ -153,8 +159,26 @@ def readData(outdir, indir, useRemoval = True, useFrags = True, useBonds = True,
         data = pd.concat([data, bondDiffs], axis = 1)
     return data
 
+def calculateVASPtemp(velos, nfixed, POSCAR):
+    """
+    Take in a 3N matrix of velocities, subtract of nfixed from DOF
+    POSCAR (Atoms object) used for getting masses from atoms
+    Return T as calculated by VASP
+    """
+    masses = [atom.mass for atom in POSCAR]]
+    KE = 0
+    dof = len(velos) * 3 - nfixed   #natoms * 3 - 6 (fixed atoms) * 3
+    for i, v in enumerate(velos):
+        vx, vy, vz = v
+        m = masses[i]
+        v = np.sqrt(vx**2 + vy**2  + vz**2)
+        KE += 1/2 * m * v**2
+    KE *= 103.642697 # amu * Å^2/fs^2 to eV conversion
+    return 2 * KE/kb_evK/dof
+
 #############
 # constants #
 #############
 amu2g = 1.66054e-24 #multiply by this
 a2cm = 1e-8 # multiply by this
+kb_evK = 8.617333262145E-5 #ev/K
