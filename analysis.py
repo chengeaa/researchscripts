@@ -1,5 +1,5 @@
 from ase.neighborlist import NewPrimitiveNeighborList, natural_cutoffs
-from utils import readStructs
+from researchscripts.utils import readStructs
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
