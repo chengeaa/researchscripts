@@ -165,7 +165,7 @@ def calculateVASPtemp(velos, nfixed, POSCAR):
     POSCAR (Atoms object) used for getting masses from atoms
     Return T as calculated by VASP
     """
-    masses = [atom.mass for atom in POSCAR]]
+    masses = [atom.mass for atom in POSCAR]
     KE = 0
     dof = len(velos) * 3 - nfixed   #natoms * 3 - 6 (fixed atoms) * 3
     for i, v in enumerate(velos):
