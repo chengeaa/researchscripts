@@ -1,4 +1,6 @@
 from ase.neighborlist import NewPrimitiveNeighborList, natural_cutoffs
+from researchscripts.structure import Graph
+from ase.geometry.analysis import Analysis
 from researchscripts.utils import readStructs
 import matplotlib
 matplotlib.use('TkAgg')
@@ -75,7 +77,7 @@ def analyzeFragments(datadir, **kwargs):
     """
         Pass in `name` and `shallow` kwargs if needed for utils.readStruct function
     """
-    geometries = readStructs(datadir, **kwargs)
+    geometries = readStructs(datadir, **kwargs)['geom']
     analyses = {key: Analysis(item) for key, item in geometries.items()}
     analyses = pd.Series(analyses)
 
@@ -115,34 +117,30 @@ def analyzeFragments(datadir, **kwargs):
     fragmentData.to_csv(datadir + "fragdata.csv")
     print(fragmentData.sum(axis = 0))
 
-
     ###################  
     ### bond counts ###
     ###################
     
-    totalbonds = []
-    bondcounts = {}
-    e1 = "Si"
-    e2 = "N"
-    form = False
-    for key, analysis in analyses.items(): 
-        try:
-            totalbonds += [len(analysis.get_bonds(e1, e2, unique = True)[0])]
-            bondcounts[key] =  len(analysis.get_bonds(e1, e2, unique = True)[0])
-        except:
-            print('error on {}'.format(key))
-    totalbonds = np.array(totalbonds)
-    if form:
-        print('percent runs with {}-{} bond formation = {}'.format(e1, e2, np.sum(totalbonds > 0)/170))
-    else:
-        print('average number of final {}-{} bonds = {}'.format(e1, e2, np.sum(totalbonds)/170))
-    # plt.hist(totalbonds, bins = np.arange(0, np.max(totalbonds) + 1))
-    # plt.hist(totalbonds, bins = np.arange(5, 14))
-    if form:
-        plt.title('distribution of # of {}-{} bonds formed'.format(e1, e2));
-    else:
-        plt.title('distribution of # of {}-{} bonds count'.format(e1, e2));
-    plt.show()   
+    # totalbonds = []
+    # bondcounts = {}
+    # for key, analysis in analyses.items(): 
+        # try:
+            # totalbonds += [len(analysis.get_bonds(e1, e2, unique = True)[0])]
+            # bondcounts[key] =  len(analysis.get_bonds(e1, e2, unique = True)[0])
+        # except:
+            # print('error on {}'.format(key))
+    # totalbonds = np.array(totalbonds)
+    # if form:
+        # print('percent runs with {}-{} bond formation = {}'.format(e1, e2, np.sum(totalbonds > 0)/170))
+    # else:
+        # print('average number of final {}-{} bonds = {}'.format(e1, e2, np.sum(totalbonds)/170))
+    # # plt.hist(totalbonds, bins = np.arange(0, np.max(totalbonds) + 1))
+    # # plt.hist(totalbonds, bins = np.arange(5, 14))
+    # if form:
+        # plt.title('distribution of # of {}-{} bonds formed'.format(e1, e2));
+    # else:
+        # plt.title('distribution of # of {}-{} bonds count'.format(e1, e2));
+    # plt.show()   
 
     from itertools import combinations
     elems = ["Si", "F", "N", "C", "H", "Ar"]

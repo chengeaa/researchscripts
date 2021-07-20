@@ -1,55 +1,48 @@
 #!/usr/bin/env python3
 '''
-Designed to work on the cluster, removing 'ejected species' after each equilibration step seeding Ar 
+Designed to work on the cluster, removing 'ejected species' after each equilibration step
 '''
 # imports 
-# base python
 import os
-import copy
 import re
 import sys
-import random
 
-# scipy
 import numpy as np
 import pandas as pd
-from pathlib import Path
-from scipy.optimize import curve_fit
-from scipy.interpolate import interp1d, interp2d
-from sklearn.metrics.pairwise import rbf_kernel
-from sklearn import preprocessing
-import matplotlib.tri as tri
 
 #ase
-from ase.io import gen, vasp, xyz, extxyz
-from ase.io.dftb import read_dftb_velocities, write_dftb_velocities
-from ase.calculators.dftb import Dftb
-from ase import Atoms, Atom
-from ase.constraints import FixAtoms
-from ase.visualize import view
-from ase.build import make_supercell
-from ase.visualize.plot import plot_atoms
+from ase.io import gen, vasp, xyz, extxyz, dftb
 from ase.build import add_adsorbate
-from ase.geometry.analysis import Analysis
 
 
 
 def main(
     numsofar, #use the run number you're seeding for
+    batch, #current batch number
     surftype, #type of surface as corresponding to keys in surfzmaxes
     velo, # velocity of incident Ar in Å/ps
     datadir = "temp/", #data files, structured as datadir/output$i-$j.gen and datadir/velos$i-$j
-    outputdir = "temp.new/" #files for output
+    outputdir = "temp.new/", #files for output
+    hbondrange = 4,
+    numperbatch = 17,
+    numbatches = 10 
     ):
 
     numsofar = int(numsofar)
+    batch = int(batch)
     velo = int(velo)
 
-    surfzmaxes = {'nrichhterm': 14.405, 'sirichfterm': 13.229, 'modded':15.00723826} #xtl reference slab zmax
-    surfabbr = {'nh':'nrichhterm', 'sf': 'sirichfterm'}
-    surftype = surfabbr[surftype]
-    xtlzmax = surfzmaxes[surftype] 
-    zcutoff = xtlzmax + 4 # approximating H bonding range as 4 AA
+    surfzmaxes = {'nrichhterm': 14.405, 'sirichfterm': 13.229, 'modded':15.00723826, 'amorphous':18.622, 'tol_amorphous': 32.979, 'pure_si': 22.96, 'sirichfterm_amorphous': 18.3} #xtl reference slab zmax
+    surfabbr = {'nh':'nrichhterm', 'sf': 'sirichfterm', 'a': 'amorphous', 'tol':'tol_amorphous', 'pure_si': 'pure_si', 'sif_a': 'sirichfterm_amorphous'}
+    if surftype in surfabbr.keys():
+        surftype = surfabbr[surftype]
+        xtlzmax = surfzmaxes[surftype] 
+    else:
+        try:
+            xtlzmax = float(surftype)
+        except TypeError:
+            print("surftype arg must either be a key within the known surface types, or a float representing the max surface height")
+    zcutoff = xtlzmax + hbondrange # approximating H bonding range as 4 AA
     zmincutoff = 0.1 #somewhat arbitrary value to get rid of atoms that have gone into bulk
 
     ##############################
@@ -59,7 +52,7 @@ def main(
     geometries = {}
     for i in os.listdir(datadir):
         if "output" in i:
-            key = re.search(r"\d+-\d+", i)
+            key = re.search(r"\d+", i)
             if key:
                 key = key.group(0)
                 geometries[key] =  gen.read_gen(datadir + i)
@@ -70,7 +63,7 @@ def main(
     velos = dict()
     for i in os.listdir(datadir):
         if "velos" in i:
-            key = re.search(r"\d+-\d+", i)
+            key = re.search(r"\d+", i)
             if key:
                 key = key.group(0)
                 velos[key] = pd.read_csv(datadir + i, header = None, dtype = float, sep = "\s+")
@@ -78,10 +71,9 @@ def main(
     # to account for seed behavior from first numssofar sets of runs
     # numssofar can also be interpreted as = current run seeding for
     np.random.seed(429)
-    for i in range(numsofar):
-            for i in range(170):
-                        x_rand, y_rand, z_rand = np.append(np.random.random(size = 2), 0)
-
+    for b in range(batch + numsofar * numbatches):
+        for i in range(numperbatch):
+            x_rand, y_rand, z_rand = np.append(np.random.random(size = 2), 0)
 
     ################
     ### trimming ###
@@ -146,14 +138,16 @@ if __name__ == "__main__":
     """
     Takes in four arguments:
     numsofar: number of runs so far; alternatively, run number seeding for
+    batch: batch number (this script is designed for 2-level batch/run structure)
     surftype: original slab type (used for zmax ref, some slabs are taller than others)
+        if this is a number, use this as the zmax ref
     velo: velocity 
     datadir: where the input data is
     outputdir: where the output goes
     """
 
     args = sys.argv[1:]
-    if len(args) > 5:
+    if len(args) > 6:
         print(args)
-        raise Exception("No more than 5 arguments allowed")
+        raise Exception("No more than 6 arguments allowed")
     main(*args)

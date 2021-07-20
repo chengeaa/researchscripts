@@ -3,57 +3,52 @@
 Designed to work on the cluster, removing 'ejected species' after each bomb or quench step
 '''
 # imports 
-# base python
+
 import os
-import copy
 import re
 import sys
-import random
 
 # scipy
 import numpy as np
 import pandas as pd
-from pathlib import Path
-from scipy.optimize import curve_fit
-from scipy.interpolate import interp1d, interp2d
-from sklearn.metrics.pairwise import rbf_kernel
-from sklearn import preprocessing
-import matplotlib.tri as tri
 
 #ase
-from ase.io import gen, vasp, xyz, extxyz
-from ase.io.dftb import read_dftb_velocities, write_dftb_velocities
-from ase.calculators.dftb import Dftb
-from ase import Atoms, Atom
-from ase.constraints import FixAtoms
-from ase.visualize import view
-from ase.build import make_supercell
-from ase.visualize.plot import plot_atoms
-from ase.build import add_adsorbate
-from ase.geometry.analysis import Analysis
+from ase.io import gen, vasp, xyz, extxyz, dftb
 
 
 
-def main(datadir = "temp/", #data files, structured as datadir/output$i-$j.gen and datadir/velos$i-$j
-    outputdir = "/temp.new/", #files for output
-    surftype = 'nh' #type of surface as corresponding to keys in surfzmaxes
+def main(
+    surftype, #type of surface as corresponding to keys in surfzmaxes
+    datadir = "temp/", #data files, structured as datadir/output$i-$j.gen and datadir/velos$i-$j
+    outputdir = "temp.new/",  #files for output
+    hbondrange = 4, #offset from surface corresponding to Hbond range
+    zmincutoff = 0.1, #somewhat arbitrary value to get rid of atoms that have gone into bulk
+    output_geom_name = "output",  #prefix for output geometry files
+    output_velos_name = "velos" #prefix for output velocity files
     ):
 
-    surfzmaxes = {'nrichhterm': 14.405, 'sirichfterm': 13.229} #xtl reference slab zmax
-    surfabbr = {'nh':'nrichhterm', 'sf': 'sirichfterm'}
-    surftype = surfabbr[surftype]
-    xtlzmax = surfzmaxes[surftype] 
-    zcutoff = xtlzmax + 4 # approximating H bonding range as 4 AA
-    zmincutoff = 0.1 #somewhat arbitrary value to get rid of atoms that have gone into bulk
+    surfzmaxes = {'nrichhterm': 14.405, 'sirichfterm': 13.229, 'modded':15.00723826, 'amorphous':18.622, 'tol_amorphous':32.979, 'pure_si': 22.96, 'sirichfterm_amorphous': 18.3} #xtl reference slab zmax
+    surfabbr = {'nh':'nrichhterm', 'sf': 'sirichfterm', 'a': 'amorphous', 'tol': 'tol_amorphous', 'pure_si':'pure_si', 'sif_a':'sirichfterm_amorphous'}
+    if surftype in surfabbr.keys():
+        surftype = surfabbr[surftype]
+        xtlzmax = surfzmaxes[surftype] 
+    else:
+        try:
+            xtlzmax = float(surftype)
+        except TypeError:
+            print("surftype arg must either be a key within the known surface types, or a float representing the max surface height")
+            raise
+    zcutoff = xtlzmax + hbondrange # approximating H bonding range as 4 Å
 
     ##############################
     ### Read in geometry files ###
     ##############################
 
+
     geometries = {}
     for i in os.listdir(datadir):
-        if "output" in i:
-            key = re.search(r"\d+-\d+", i)
+        if output_geom_name in i:
+            key = re.search(r"\d+", i)
             if key:
                 key = key.group(0)
                 geometries[key] =  gen.read_gen(datadir + i)
@@ -63,8 +58,8 @@ def main(datadir = "temp/", #data files, structured as datadir/output$i-$j.gen a
     ##########################
     velos = dict()
     for i in os.listdir(datadir):
-        if "velos" in i:
-            key = re.search(r"\d+-\d+", i)
+        if output_velos_name in i:
+            key = re.search(r"\d+", i)
             if key:
                 key = key.group(0)
                 velos[key] = pd.read_csv(datadir + i, header = None, dtype = float, sep = "\s+")
@@ -121,15 +116,16 @@ def main(datadir = "temp/", #data files, structured as datadir/output$i-$j.gen a
         gen.write_gen("%sinput%s.gen" % (outputdir, key), 
             geom)
     for key, v in trimmedvelos.items():
-        v.to_csv("%svelos%s.in" % (outputdir, key), 
+        v.to_csv("%s%s%s.in" % (outputdir, output_velos_name, key), 
             sep = " ", index = False, header = False)
 
 if __name__ == "__main__":
     """
     Takes in three arguments:
+    surftype: original slab type (used for zmax ref, some slabs are taller than others)
+        if this is a number, use this as the zmax ref
     datadir: where the input data is
     outputdir: where the output goes
-    surftype: original slab type (used for zmax ref, some slabs are taller than others)
     """
 
     args = sys.argv[1:]
