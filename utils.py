@@ -167,7 +167,7 @@ def calculateVASPtemp(velos, nfixed, POSCAR):
     """
     masses = [atom.mass for atom in POSCAR]
     KE = 0
-    dof = len(velos) * 3 - nfixed   #natoms * 3 - 6 (fixed atoms) * 3
+    dof = len(velos) * 3 - nfixed   #natoms * 3 - (fixed atoms) * 3
     for i, v in enumerate(velos):
         vx, vy, vz = v
         m = masses[i]

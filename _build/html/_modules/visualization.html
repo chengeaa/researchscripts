@@ -58,6 +58,8 @@
 <span class="kn">from</span> <span class="nn">ase.visualize</span> <span class="kn">import</span> <span class="n">view</span>
 
 <span class="c1">#scipy</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;TkAgg&#39;</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -102,7 +104,7 @@
             <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;gen&#39;</span><span class="p">:</span>
                 <span class="n">geometries</span> <span class="o">+=</span>  <span class="p">[</span><span class="n">gen</span><span class="o">.</span><span class="n">read_gen</span><span class="p">(</span><span class="n">directory</span> <span class="o">+</span> <span class="n">i</span><span class="p">)]</span>
             <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;vasp&#39;</span><span class="p">:</span>
-                <span class="n">geometries</span> <span class="o">+=</span>  <span class="p">[</span><span class="n">vasp</span><span class="o">.</span><span class="n">read_vasp</span><span class="p">(</span><span class="n">datadir</span> <span class="o">+</span> <span class="n">i</span><span class="p">)]</span>
+                <span class="n">geometries</span> <span class="o">+=</span>  <span class="p">[</span><span class="n">vasp</span><span class="o">.</span><span class="n">read_vasp</span><span class="p">(</span><span class="n">directory</span> <span class="o">+</span> <span class="n">i</span><span class="p">)]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;file kind must be from (vasp, gen)&quot;</span><span class="p">)</span>
     <span class="n">view</span><span class="p">(</span><span class="n">geometries</span><span class="p">)</span></div>
@@ -139,6 +141,35 @@
 
     <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="getabBondcountStructure"><a class="viewcode-back" href="../index.html#visualization.getabBondcountStructure">[docs]</a><span class="k">def</span> <span class="nf">getabBondcountStructure</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets a struture with &#39;charges&#39; equal to nbonds between a (fixed) and b(``element``) </span>
+<span class="sd">    data needs geom, coordlabels, and (optionally) wantedIndices columns</span>
+<span class="sd">    geom is Atoms object of structure</span>
+<span class="sd">    coordlabels is a raw output from the coordlabeller function (relcoords and raw bonds)</span>
+<span class="sd">    element is desired secondary element (primary element determined by input)</span>
+<span class="sd">    Calls view() on resulting geometry</span>
+<span class="sd">    Returns the structure</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">coordlabels</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s1">&#39;coordlabels&#39;</span><span class="p">]</span>
+    <span class="n">geometry</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s1">&#39;geom&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;wantedIndices&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s1">&#39;wantedIndices&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">geometry</span><span class="p">))</span>
+    
+    <span class="n">bondcounts</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">geometry</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">symbol</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">value</span><span class="p">])</span> <span class="o">==</span> <span class="n">element</span>
+        <span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> 
+         <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">coordlabels</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="n">indices</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="n">charges</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">charges</span><span class="p">)):</span>
+        <span class="n">charges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">bondcounts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">geometry</span><span class="o">.</span><span class="n">set_initial_charges</span><span class="p">(</span><span class="n">charges</span><span class="p">)</span>
+    <span class="n">view</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">geometry</span></div>
 </pre></div>
 
           </div>

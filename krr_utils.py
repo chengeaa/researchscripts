@@ -3,38 +3,50 @@ from sklearn import preprocessing
 from ase import Atom, Atoms
 import pandas as pd
 
-def predictz(surf, x, y, zmodel, species):
+def regionalMaxHeight(surf, x, y, R = 2.2):
     """
-    surf: bare substrate
-    x, y: position at which to place adsorbate
-    zmodel: model object
-
-    returns predicted z value
+    Returns the max height of any atom in a region of radius R around x,y
+    R is default 2.2 from some experiments I did
     """
-    searchR = 2.2
-    surf = surf.copy()
-    add_adsorbate(surf, 'He', height = 0, position = (x, y))
-
     maxz = 0
     for atom in surf:
         if atom.symbol == "He": # don't use He position to determine max Z position
             continue
         _x, _y, _z = atom.position
-        if ((x - _x)**2 + (y - _y)**2) ** 0.5 < searchR:
+        if ((x - _x)**2 + (y - _y)**2) ** 0.5 < R:
             if _z > maxz:
-                maxz = _z + 2.5
+                maxz = _z 
+    return maxz
 
-    surf[-1].position[2] = maxz
+def predictz(surf, x, y, zmodel, species):
+    """
+    surf: *bare* substrate
+    x, y: position at which to place adsorbate
+    zmodel: model object (which takes in a dataframe that's n*p, p = #SOAP features)
+
+    returns a predicted z value, based on sum of regionalMaxHeight and zmodel outcome
+    """
+    searchR = 2.2
+    surf = surf.copy()
+    add_adsorbate(surf, 'He', height = 0, position = (x, y))
+
+    surf[-1].position[2] = rulez(surf, x, y, species) # use rulez for initial guess for z model
 
     X = getSOAPs(pd.Series({0: surf}), species = species)[0].reshape(1, -1) #reshape because just one sample
-    print(X.shape)
-    if zmodel:
-        predz = zmodel.predict(X)
-#       print(maxz, predz)
-    else:
-#         TODO: implement me hehe
-        predz = maxz + 2.5
+    predz = regionalMaxHeight(surf, x, y, species) + zmodel.predict(X) 
     return predz
+
+
+def rulez(surf, x, y):
+    """
+    surf: *bare* substrate
+    x, y: position at which to place adsorbate
+
+    returns predicted z value
+    """
+    surf = surf.copy()
+
+    return regionalMaxHeight(surf, x, y) + 2.5
 
 def convertAdsorbateToHe(struct, centerIndex, molIndices, height = None):
     """

@@ -62,11 +62,26 @@
 
 <dl class="function">
 <dt id="analysis.coordLabeller">
-<code class="descclassname">analysis.</code><code class="descname">coordLabeller</code><span class="sig-paren">(</span><em>atoms</em>, <em>image</em>, <em>fullCoordinations={'F': 1</em>, <em>'H': 1</em>, <em>'N': 3</em>, <em>'Si': 4}</em>, <em>minAngles={'F': 360</em>, <em>'H': 360</em>, <em>'N': 109.5</em>, <em>'Si': 90}</em>, <em>maxBonds_per_element={'F': 1</em>, <em>'H': 1</em>, <em>'N': 4</em>, <em>'Si': 6}</em>, <em>angle_tolerance=0</em>, <em>bond_tolerance=0.5</em>, <em>minz=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/analysis.html#coordLabeller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analysis.coordLabeller" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">analysis.</code><code class="descname">coordLabeller</code><span class="sig-paren">(</span><em>atoms</em>, <em>fullCoordinations={'F': 1</em>, <em>'H': 1</em>, <em>'N': 3</em>, <em>'Si': 4}</em>, <em>minAngles={'F': 360</em>, <em>'H': 360</em>, <em>'N': 109.5</em>, <em>'Si': 90}</em>, <em>maxBonds_per_element={'F': 1</em>, <em>'H': 1</em>, <em>'N': 4</em>, <em>'Si': 6}</em>, <em>angle_tolerance=0.15</em>, <em>bond_tolerance=0.25</em>, <em>minz=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/analysis.html#coordLabeller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analysis.coordLabeller" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes a structure, returns two dictionaries, the keys of which are identical: 
 the index of the atom for which the statistic is calculated
 relativeCoordinations: -1 if atom i is undercoordinated, 1 if overcoordinated, 0 else
-bonds: list of bonds for atom i</p>
+bonds: list of bonds for atom i
+Defaults for angle and bond tolerance based on amorphous SiN</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="analysis.getBondSubset">
+<code class="descclassname">analysis.</code><code class="descname">getBondSubset</code><span class="sig-paren">(</span><em>data</em>, <em>elem</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/analysis.html#getBondSubset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analysis.getBondSubset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Requires <code class="docutils literal"><span class="pre">data</span></code> pd df that has columns ‘geom’, ‘coordlabels’, ‘wantedIndices’
+Returns pd Series with the subsetted bond counts of (A, elem) where A should be set by the input wantedIndices</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="analysis.plotBondDistributionComposition">
+<code class="descclassname">analysis.</code><code class="descname">plotBondDistributionComposition</code><span class="sig-paren">(</span><em>data</em>, <em>a='Si'</em>, <em>b='N'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/analysis.html#plotBondDistributionComposition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analysis.plotBondDistributionComposition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Requires <code class="docutils literal"><span class="pre">data</span></code>, a pd df with ‘geom’, ‘coordlabels’, and (optionally) ‘wantedIndices’
+Gives overall distribution and percent makeup of elements A and B in that distribution</p>
 </dd></dl>
 
 </div>
@@ -132,7 +147,7 @@ spacing: spacing between grid points (eg, 0.2 is a 5x5 grid)</dd>
 <code class="descclassname">input_generation.</code><code class="descname">randomGrid</code><span class="sig-paren">(</span><em>adsorbate</em>, <em>slab</em>, <em>h=2</em>, <em>outputDir='tempout/'</em>, <em>numDirs=10</em>, <em>runsPerDir=17</em>, <em>shallow=False</em>, <em>kind='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/input_generation.html#randomGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#input_generation.randomGrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces a collection of structures with adsorbate randomly placed on 
 given slab. 
-Writes .gen outputs to desired directory</p>
+Writes (.gen or vasp) outputs to desired directory</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd>adsorbate: Atoms obj of adsorbate
@@ -143,6 +158,29 @@ numDirs: Number of batches. Defaults to 10.
 runsPerDir: Number of sims per batch. Defaults to 17.
 shallow: If all runs to be at one directory level. Defaults to False.
 kind: output desired, from (gen, vasp). Defaults to gen.</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="input_generation.randomGridMultiple">
+<code class="descclassname">input_generation.</code><code class="descname">randomGridMultiple</code><span class="sig-paren">(</span><em>n</em>, <em>adsorbate</em>, <em>slab</em>, <em>h=2</em>, <em>outputDir='tempout/'</em>, <em>numDirs=10</em>, <em>runsPerDir=17</em>, <em>shallow=False</em>, <em>kind='gen'</em>, <em>minDist=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/input_generation.html#randomGridMultiple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#input_generation.randomGridMultiple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a collection of structures (of size <code class="docutils literal"><span class="pre">numDirs</span></code> * <code class="docutils literal"><span class="pre">runsperDir</span></code>;
+each has n adsorbates randomly placed on given slab. 
+Writes (.gen or vasp) outputs to desired directory</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>n: number of adsorbates per slab
+adsorbate: Atoms obj of adsorbate
+slab: Atoms obj of slab
+h: height of adsorbate (above max slab position)
+outputDir: Path (str) for desired output location.
+numDirs: Number of batches. Defaults to 10.
+runsPerDir: Number of sims per batch. Defaults to 17.
+shallow: If all runs to be at one directory level. Defaults to False.
+kind: output desired, from (gen, vasp). Defaults to gen. 
+minDist: minimum distance between placed adsorbates (in Å)</dd>
 <dt>Returns:</dt>
 <dd>None</dd>
 </dl>
@@ -193,9 +231,24 @@ rcut, nmax, lmax, sigma, periodic, crossover, sparse: SOAP parameters</dd>
 <dl class="function">
 <dt id="krr_utils.predictz">
 <code class="descclassname">krr_utils.</code><code class="descname">predictz</code><span class="sig-paren">(</span><em>surf</em>, <em>x</em>, <em>y</em>, <em>zmodel</em>, <em>species</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krr_utils.html#predictz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#krr_utils.predictz" title="Permalink to this definition">¶</a></dt>
-<dd><p>surf: bare substrate
+<dd><p>surf: <em>bare</em> substrate
 x, y: position at which to place adsorbate
-zmodel: model object</p>
+zmodel: model object (which takes in a dataframe that’s n*p, p = #SOAP features)</p>
+<p>returns a predicted z value, based on sum of regionalMaxHeight and zmodel outcome</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="krr_utils.regionalMaxHeight">
+<code class="descclassname">krr_utils.</code><code class="descname">regionalMaxHeight</code><span class="sig-paren">(</span><em>surf</em>, <em>x</em>, <em>y</em>, <em>R=2.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krr_utils.html#regionalMaxHeight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#krr_utils.regionalMaxHeight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the max height of any atom in a region of radius R around x,y
+R is default 2.2 from some experiments I did</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="krr_utils.rulez">
+<code class="descclassname">krr_utils.</code><code class="descname">rulez</code><span class="sig-paren">(</span><em>surf</em>, <em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/krr_utils.html#rulez"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#krr_utils.rulez" title="Permalink to this definition">¶</a></dt>
+<dd><p>surf: <em>bare</em> substrate
+x, y: position at which to place adsorbate</p>
 <p>returns predicted z value</p>
 </dd></dl>
 
@@ -376,6 +429,20 @@ files written in input$i-$j.gen format</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="utils.calculateVASPtemp">
+<code class="descclassname">utils.</code><code class="descname">calculateVASPtemp</code><span class="sig-paren">(</span><em>velos</em>, <em>nfixed</em>, <em>POSCAR</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils.html#calculateVASPtemp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.calculateVASPtemp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take in a 3N matrix of velocities, subtract of nfixed from DOF
+POSCAR (Atoms object) used for getting masses from atoms
+Return T as calculated by VASP</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.flatten">
+<code class="descclassname">utils.</code><code class="descname">flatten</code><span class="sig-paren">(</span><em>l</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils.html#flatten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.flatten" title="Permalink to this definition">¶</a></dt>
+<dd><p>flattens a 2d list</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="utils.normalize">
 <code class="descclassname">utils.</code><code class="descname">normalize</code><span class="sig-paren">(</span><em>y</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils.html#normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.normalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes y, x of data and returns normalized y</p>
@@ -438,6 +505,18 @@ adsorbateEnergy: energy of the adsorbate in the system</p>
 </div>
 <div class="section" id="module-visualization">
 <span id="visualization"></span><h2>visualization<a class="headerlink" href="#module-visualization" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="visualization.getabBondcountStructure">
+<code class="descclassname">visualization.</code><code class="descname">getabBondcountStructure</code><span class="sig-paren">(</span><em>data</em>, <em>idx</em>, <em>element</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/visualization.html#getabBondcountStructure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualization.getabBondcountStructure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a struture with ‘charges’ equal to nbonds between a (fixed) and b(<code class="docutils literal"><span class="pre">element</span></code>) 
+data needs geom, coordlabels, and (optionally) wantedIndices columns
+geom is Atoms object of structure
+coordlabels is a raw output from the coordlabeller function (relcoords and raw bonds)
+element is desired secondary element (primary element determined by input)
+Calls view() on resulting geometry
+Returns the structure</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="visualization.plotElemDist">
 <code class="descclassname">visualization.</code><code class="descname">plotElemDist</code><span class="sig-paren">(</span><em>data, targetElem='C', latticeElems=['Si', 'N', 'H'], nbins=25, stacked=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/visualization.html#plotElemDist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visualization.plotElemDist" title="Permalink to this definition">¶</a></dt>

@@ -59,6 +59,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">y</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../index.html#utils.flatten">[docs]</a><span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    flattens a 2d list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">l</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span> </div>
+
 <div class="viewcode-block" id="KE"><a class="viewcode-back" href="../index.html#utils.KE">[docs]</a><span class="k">def</span> <span class="nf">KE</span><span class="p">(</span><span class="n">v_tot</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns KE of Ar+ in eV given total velocity</span>
@@ -201,11 +207,29 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">data</span><span class="p">,</span> <span class="n">bondDiffs</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">data</span></div>
 
+<div class="viewcode-block" id="calculateVASPtemp"><a class="viewcode-back" href="../index.html#utils.calculateVASPtemp">[docs]</a><span class="k">def</span> <span class="nf">calculateVASPtemp</span><span class="p">(</span><span class="n">velos</span><span class="p">,</span> <span class="n">nfixed</span><span class="p">,</span> <span class="n">POSCAR</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Take in a 3N matrix of velocities, subtract of nfixed from DOF</span>
+<span class="sd">    POSCAR (Atoms object) used for getting masses from atoms</span>
+<span class="sd">    Return T as calculated by VASP</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">masses</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">mass</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">POSCAR</span><span class="p">]</span>
+    <span class="n">KE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">dof</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">velos</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">-</span> <span class="n">nfixed</span>   <span class="c1">#natoms * 3 - (fixed atoms) * 3</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">velos</span><span class="p">):</span>
+        <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">masses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">vx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">vy</span><span class="o">**</span><span class="mi">2</span>  <span class="o">+</span> <span class="n">vz</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">KE</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="n">m</span> <span class="o">*</span> <span class="n">v</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">KE</span> <span class="o">*=</span> <span class="mf">103.642697</span> <span class="c1"># amu * Å^2/fs^2 to eV conversion</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">KE</span><span class="o">/</span><span class="n">kb_evK</span><span class="o">/</span><span class="n">dof</span></div>
+
 <span class="c1">#############</span>
 <span class="c1"># constants #</span>
 <span class="c1">#############</span>
 <span class="n">amu2g</span> <span class="o">=</span> <span class="mf">1.66054e-24</span> <span class="c1">#multiply by this</span>
 <span class="n">a2cm</span> <span class="o">=</span> <span class="mf">1e-8</span> <span class="c1"># multiply by this</span>
+<span class="n">kb_evK</span> <span class="o">=</span> <span class="mf">8.617333262145E-5</span> <span class="c1">#ev/K</span>
 </pre></div>
 
           </div>
