@@ -20,6 +20,24 @@ def getslab(struct):
     cc = g.connectedComponents()
     maingraph = np.array([i for i in cc if 0 in i][0])
     return struct[[atom.index for atom in struct if atom.index in maingraph]]
+
+def getslab(struct):
+    """
+    Input: 
+        struct: structre from which we will trim unbound species (.gen file)
+    Output:
+        baseslab: structure with unbound species trimmed
+    """
+    adjmat = Analysis(struct).adjacency_matrix[0]
+    numnodes = adjmat.shape[0]
+    g = Graph(numnodes)
+    for i in range(numnodes):
+        for j in range(numnodes):
+            if adjmat[i,j]:
+                g.addEdge(i,j)
+    cc = g.connectedComponents()
+    maingraph = np.array([i for i in cc if 0 in i][0])
+    return struct[[atom.index for atom in struct if atom.index in maingraph]]
 # Python program to print connected
 # components in an undirected graph
 # https://www.geeksforgeeks.org/connected-components-in-an-undirected-graph/

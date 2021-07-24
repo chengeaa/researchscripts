@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 '''
 Designed to work on the cluster, removing 'ejected species' after each equilibration step
+Make sure the source files are named in the form `output%d.gen`
 '''
 # imports 
 import os
@@ -13,7 +14,10 @@ import pandas as pd
 #ase
 from ase.io import gen, vasp, xyz, extxyz, dftb
 from ase.build import add_adsorbate
+from ase.geometry.analysis import Analysis
 
+#researchscripts
+from researchscripts.structure import Graph
 
 
 def main(
@@ -23,7 +27,8 @@ def main(
     velo, # velocity of incident Ar in Å/ps
     datadir = "temp/", #data files, structured as datadir/output$i-$j.gen and datadir/velos$i-$j
     outputdir = "temp.new/", #files for output
-    hbondrange = 4,
+    hbondrange = 3,
+    zmincutoff = 0.1, #somewhat arbitrary value to get rid of atoms that have gone into bulk
     numperbatch = 17,
     numbatches = 10 
     ):
@@ -31,19 +36,6 @@ def main(
     numsofar = int(numsofar)
     batch = int(batch)
     velo = int(velo)
-
-    surfzmaxes = {'nrichhterm': 14.405, 'sirichfterm': 13.229, 'modded':15.00723826, 'amorphous':18.622, 'tol_amorphous': 32.979, 'pure_si': 22.96, 'sirichfterm_amorphous': 18.3} #xtl reference slab zmax
-    surfabbr = {'nh':'nrichhterm', 'sf': 'sirichfterm', 'a': 'amorphous', 'tol':'tol_amorphous', 'pure_si': 'pure_si', 'sif_a': 'sirichfterm_amorphous'}
-    if surftype in surfabbr.keys():
-        surftype = surfabbr[surftype]
-        xtlzmax = surfzmaxes[surftype] 
-    else:
-        try:
-            xtlzmax = float(surftype)
-        except TypeError:
-            print("surftype arg must either be a key within the known surface types, or a float representing the max surface height")
-    zcutoff = xtlzmax + hbondrange # approximating H bonding range as 4 AA
-    zmincutoff = 0.1 #somewhat arbitrary value to get rid of atoms that have gone into bulk
 
     ##############################
     ### Read in geometry files ###
@@ -86,31 +78,35 @@ def main(
     removedspecies = dict()
 
     for key, geom in geometries.items(): 
-        aboveZindices = set()
-        belowZindices = set()
-        otherindices = set()
-        nearbyatoms = set()
         removedatoms = {'Si': 0, 'N': 0, 'H': 0, 'Ar': 0, 'F':0, 'C':0}
-        for atom in geom:
-            if atom.position[2] > zcutoff:
-                aboveZindices.add(atom.index)
-            elif atom.position[2] < zmincutoff:
-                belowZindices.add(atom.index)
-            else:
-                otherindices.add(atom.index)
-        # iteration through geom once guarantees uniqueness in aboveZindices and otherindices 
+
+        # construct graph 
+        adjmat = Analysis(geom).adjacency_matrix[0]
+        numnodes = adjmat.shape[0]
+        g = Graph(numnodes)
+        for i in range(numnodes):
+            for j in range(numnodes):
+                if adjmat[i,j]:
+                    g.addEdge(i,j)
+        cc = g.connectedComponents()
+
+        #identify slab, and max height of slab
+        maingraph = np.array([i for i in cc if 0 in i][0])
+        slab = geom[[atom.index for atom in geom if atom.index in maingraph]]
+        gen.write_gen(outputdir + "slab{}.gen".format(key), slab)
+        zcutoff = np.max([atom.position[2] for atom in slab]) + hbondrange
         
-        for i in aboveZindices:
-            _dists = geom.get_distances(i, list(otherindices))
-            nearbyatoms.update(np.array(list(otherindices))[_dists < 2]) 
-            # add indices where distance to i is less than 2
-        atomstoremove = aboveZindices.union(nearbyatoms).union(belowZindices)
-        
-        for idx in atomstoremove:
+        # isolate fragments and identify which to remove
+        fragGraphs = [i for i in cc if 0 not in i]
+        fragZs = [[geom[i].position[2] for i in frag] for frag in fragGraphs]
+        removeFrag = [np.all(np.array(i) > zcutoff) or np.all(np.array(i) < zmincutoff) 
+                for i in fragZs]
+        atomsToRemove = [i for g,r in zip(fragGraphs, removeFrag) if r for i in g]
+        for idx in atomsToRemove:
             removedatoms[geom[idx].symbol] += 1 #tally removed atoms by species
         
         geomcopy = geom.copy()
-        del geomcopy[[atom.index for atom in geomcopy if atom.index in atomstoremove]]
+        del geomcopy[[atom.index for atom in geomcopy if atom.index in atomsToRemove]]
 
         x_rand, y_rand, z_rand = geomcopy.cell.cartesian_positions(np.append(np.random.random(size = 2), 0))
 
@@ -118,7 +114,7 @@ def main(
 
         removedspecies[key] = pd.Series(removedatoms)
         trimmedgeoms[key] = geomcopy
-        trimmedvelos[key] = velos[key][[i not in atomstoremove for i in np.arange(len(velos[key]))]]
+        trimmedvelos[key] = velos[key][[i not in atomsToRemove for i in np.arange(len(velos[key]))]]
         trimmedvelos[key] = trimmedvelos[key].append(pd.Series([0, 0, -velo]), ignore_index=True)
 
 
