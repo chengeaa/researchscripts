@@ -1,56 +1,41 @@
 #!/usr/bin/env python3
 '''
-Designed to work on the cluster, removing 'ejected species' after each equilibration step seeding Ar 
+Designed to work on the cluster, removing 'ejected species' after each equilibration step
+Make sure the source files are named in the form `output%d.gen`
 '''
 # imports 
-# base python
 import os
-import copy
 import re
 import sys
-import random
 
-# scipy
 import numpy as np
 import pandas as pd
-from pathlib import Path
-from scipy.optimize import curve_fit
-from scipy.interpolate import interp1d, interp2d
-from sklearn.metrics.pairwise import rbf_kernel
-from sklearn import preprocessing
-import matplotlib.tri as tri
 
 #ase
-from ase.io import gen, vasp, xyz, extxyz
-from ase.io.dftb import read_dftb_velocities, write_dftb_velocities
-from ase.calculators.dftb import Dftb
-from ase import Atoms, Atom
-from ase.constraints import FixAtoms
-from ase.visualize import view
-from ase.build import make_supercell
-from ase.visualize.plot import plot_atoms
+from ase.io import gen, vasp, xyz, extxyz, dftb
 from ase.build import add_adsorbate
 from ase.geometry.analysis import Analysis
 
+#researchscripts
+from researchscripts.structure import Graph
 
 
 def main(
     numsofar, #use the run number you're seeding for
+    batch, #current batch number
     surftype, #type of surface as corresponding to keys in surfzmaxes
     velo, # velocity of incident Ar in Å/ps
     datadir = "temp/", #data files, structured as datadir/output$i-$j.gen and datadir/velos$i-$j
-    outputdir = "temp.new/" #files for output
+    outputdir = "temp.new/", #files for output
+    hbondrange = 3,
+    zmincutoff = 0.1, #somewhat arbitrary value to get rid of atoms that have gone into bulk
+    numperbatch = 17,
+    numbatches = 10 
     ):
 
     numsofar = int(numsofar)
+    batch = int(batch)
     velo = int(velo)
-
-    surfzmaxes = {'nrichhterm': 14.405, 'sirichfterm': 13.229, 'modded':15.00723826} #xtl reference slab zmax
-    surfabbr = {'nh':'nrichhterm', 'sf': 'sirichfterm'}
-    surftype = surfabbr[surftype]
-    xtlzmax = surfzmaxes[surftype] 
-    zcutoff = xtlzmax + 4 # approximating H bonding range as 4 AA
-    zmincutoff = 0.1 #somewhat arbitrary value to get rid of atoms that have gone into bulk
 
     ##############################
     ### Read in geometry files ###
@@ -59,7 +44,7 @@ def main(
     geometries = {}
     for i in os.listdir(datadir):
         if "output" in i:
-            key = re.search(r"\d+-\d+", i)
+            key = re.search(r"\d+", i)
             if key:
                 key = key.group(0)
                 geometries[key] =  gen.read_gen(datadir + i)
@@ -70,7 +55,7 @@ def main(
     velos = dict()
     for i in os.listdir(datadir):
         if "velos" in i:
-            key = re.search(r"\d+-\d+", i)
+            key = re.search(r"\d+", i)
             if key:
                 key = key.group(0)
                 velos[key] = pd.read_csv(datadir + i, header = None, dtype = float, sep = "\s+")
@@ -78,10 +63,9 @@ def main(
     # to account for seed behavior from first numssofar sets of runs
     # numssofar can also be interpreted as = current run seeding for
     np.random.seed(429)
-    for i in range(numsofar):
-            for i in range(170):
-                        x_rand, y_rand, z_rand = np.append(np.random.random(size = 2), 0)
-
+    for b in range(batch + numsofar * numbatches):
+        for i in range(numperbatch):
+            x_rand, y_rand, z_rand = np.append(np.random.random(size = 2), 0)
 
     ################
     ### trimming ###
@@ -94,31 +78,35 @@ def main(
     removedspecies = dict()
 
     for key, geom in geometries.items(): 
-        aboveZindices = set()
-        belowZindices = set()
-        otherindices = set()
-        nearbyatoms = set()
         removedatoms = {'Si': 0, 'N': 0, 'H': 0, 'Ar': 0, 'F':0, 'C':0}
-        for atom in geom:
-            if atom.position[2] > zcutoff:
-                aboveZindices.add(atom.index)
-            elif atom.position[2] < zmincutoff:
-                belowZindices.add(atom.index)
-            else:
-                otherindices.add(atom.index)
-        # iteration through geom once guarantees uniqueness in aboveZindices and otherindices 
+
+        # construct graph 
+        adjmat = Analysis(geom).adjacency_matrix[0]
+        numnodes = adjmat.shape[0]
+        g = Graph(numnodes)
+        for i in range(numnodes):
+            for j in range(numnodes):
+                if adjmat[i,j]:
+                    g.addEdge(i,j)
+        cc = g.connectedComponents()
+
+        #identify slab, and max height of slab
+        maingraph = np.array([i for i in cc if 0 in i][0])
+        slab = geom[[atom.index for atom in geom if atom.index in maingraph]]
+        gen.write_gen(outputdir + "slab{}.gen".format(key), slab)
+        zcutoff = np.max([atom.position[2] for atom in slab]) + hbondrange
         
-        for i in aboveZindices:
-            _dists = geom.get_distances(i, list(otherindices))
-            nearbyatoms.update(np.array(list(otherindices))[_dists < 2]) 
-            # add indices where distance to i is less than 2
-        atomstoremove = aboveZindices.union(nearbyatoms).union(belowZindices)
-        
-        for idx in atomstoremove:
+        # isolate fragments and identify which to remove
+        fragGraphs = [i for i in cc if 0 not in i]
+        fragZs = [[geom[i].position[2] for i in frag] for frag in fragGraphs]
+        removeFrag = [np.all(np.array(i) > zcutoff) or np.all(np.array(i) < zmincutoff) 
+                for i in fragZs]
+        atomsToRemove = [i for g,r in zip(fragGraphs, removeFrag) if r for i in g]
+        for idx in atomsToRemove:
             removedatoms[geom[idx].symbol] += 1 #tally removed atoms by species
         
         geomcopy = geom.copy()
-        del geomcopy[[atom.index for atom in geomcopy if atom.index in atomstoremove]]
+        del geomcopy[[atom.index for atom in geomcopy if atom.index in atomsToRemove]]
 
         x_rand, y_rand, z_rand = geomcopy.cell.cartesian_positions(np.append(np.random.random(size = 2), 0))
 
@@ -126,7 +114,7 @@ def main(
 
         removedspecies[key] = pd.Series(removedatoms)
         trimmedgeoms[key] = geomcopy
-        trimmedvelos[key] = velos[key][[i not in atomstoremove for i in np.arange(len(velos[key]))]]
+        trimmedvelos[key] = velos[key][[i not in atomsToRemove for i in np.arange(len(velos[key]))]]
         trimmedvelos[key] = trimmedvelos[key].append(pd.Series([0, 0, -velo]), ignore_index=True)
 
 
@@ -146,14 +134,16 @@ if __name__ == "__main__":
     """
     Takes in four arguments:
     numsofar: number of runs so far; alternatively, run number seeding for
+    batch: batch number (this script is designed for 2-level batch/run structure)
     surftype: original slab type (used for zmax ref, some slabs are taller than others)
+        if this is a number, use this as the zmax ref
     velo: velocity 
     datadir: where the input data is
     outputdir: where the output goes
     """
 
     args = sys.argv[1:]
-    if len(args) > 5:
+    if len(args) > 6:
         print(args)
-        raise Exception("No more than 5 arguments allowed")
+        raise Exception("No more than 6 arguments allowed")
     main(*args)
