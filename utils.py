@@ -17,17 +17,19 @@ def flatten(l):
     """
     return [item for sublist in l for item in sublist] 
 
-def KE(v_tot):
+def KE(v_tot, m = 39.95):
     """
-    Returns KE of Ar+ in eV given total velocity
+    Returns KE in eV given total velocity, with arraylike v and m input
+    v in Å/fs, m in a.u.
+    m defaults to mass for Ar
     """
-    return 6.24E18 * 0.5 * 1.66E-27*39.95*(v_tot*1E5)**2
+    return 6.24E18 * 0.5 * 1.66E-27* m *(v_tot*1E5)**2
 
-def v_from_KE(E):
+def v_from_KE(E, m = 39.95):
     """
     Returns v(z) of Ar+ in eV given KE
     """
-    return np.sqrt(E/(6.24E18 * 0.5 * 1.66E-27*39.95))/1E5
+    return np.sqrt(E/(6.24E18 * 0.5 * 1.66E-27*m))/1E5
 
 def readStructs(datadir, shallow = True, name = "output"):
     """
@@ -175,6 +177,30 @@ def calculateVASPtemp(velos, nfixed, POSCAR):
         KE += 1/2 * m * v**2
     KE *= 103.642697 # amu * Å^2/fs^2 to eV conversion
     return 2 * KE/kb_evK/dof
+
+def vAngle(vec, plane = (0, 0, 1)):
+    """
+    Get angle for vector (eg, velocity) with respect to horizontal plane
+    """
+    u = vec
+    n = np.array(plane)
+
+    n_norm = np.sqrt(sum(n**2))
+
+    p = (np.dot(u, n)/n_norm**2)*n
+
+    v = u - p
+
+    uu = u / np.linalg.norm(u)
+
+    vv = v / np.linalg.norm(v)
+
+    dot_product = np.dot(uu, vv)
+
+    dot_product = min(1, dot_product)
+
+    angle = np.degrees(np.arccos(dot_product))
+    return angle
 
 #############
 # constants #
