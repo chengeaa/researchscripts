@@ -4,6 +4,8 @@ import pandas as pd
 import re
 from ase.io import gen
 
+def flatten(t):
+    return [item for sublist in t for item in sublist]
 
 def normalize(y,x):
     """

@@ -1,11 +1,8 @@
 from ase.neighborlist import NewPrimitiveNeighborList, natural_cutoffs
-<<<<<<< HEAD
-from utils import readStructs
-=======
-from researchscripts.structure import Graph
+from utils import readStructs, KE, vAngle
+from structure import Graph, getFragIndices
 from ase.geometry.analysis import Analysis
-from researchscripts.utils import readStructs
->>>>>>> 0b7b669567d06a460dceecc696a09051d408e0d2
+from utils import readStructs
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
@@ -235,3 +232,178 @@ def getBondSubset(data, elem):
      for idx in data.index
     })
     return result
+
+def getFragStats(traj, fragments, indices, verbose = False):
+    trajVelos = np.array([i.arrays['vel'] for i in traj]) # Read velocities; shape is (T, N, 3)
+    # Get the velocities of each fragment at each time point
+    fragVelosByPoint = {}
+    for key, frags in fragments.items():
+        pointVelos = []
+        for frag in frags:
+            velo = trajVelos[indices[key], frag, :]
+            pointVelos += [velo]
+        fragVelosByPoint[key] = pointVelos
+
+    # Collect the relevant statistics: KE, p, angles
+    fragAnglesByPoint = {}
+    fragPositionsByPoint = {}
+    fragMomentaByPoint = {}
+    fragKEByPoint = {}
+    fragLabelByPoint = {}
+#     print(fragVelosByPoint)
+#     print(fragsByPoint)
+    for key, velos in fragVelosByPoint.items(): # `velos` at each point is a list of velocities for each fragment
+        pointAngles = []
+        pointMomenta = []
+        pointKE = []
+        pointLabel = []
+        pointPos = []
+        for velo, frag in zip(velos, fragments[key]):
+            _velo = velo/1000 # convert to Å/fs
+
+            # Get label
+            label = traj[0][frag].symbols.get_chemical_formula()
+
+            # Get average fragment position (x,y,z)
+            _positions = traj[indices[key]][frag].positions
+            position = np.mean(_positions, axis = 0)
+
+            # Masses should be the same for all timepoints within a trajectory,
+            # but I'll just use the Point for temporary convenience
+            masses = np.array([atom.mass for atom in traj[indices[key]][frag]])
+
+            # Calculate average velocities by component and by atom
+            _fragVelos = np.mean(_velo, axis = 0) # average velocity across each dimension
+            _atomVelos = np.sqrt(np.sum(_velo**2, axis = 1)) #v_i = \sqrt{vx_i**2 + vy_i**2 + vz_i**2}
+
+            # Calculate kinetic energies (per atom, per fragment)
+            atomKEs = KE(_atomVelos, masses) #<1/2 * \sum m_i(vx^2+vy^2+vz^2)^(1/2)
+            avgKE = np.mean(atomKEs)
+
+            # Calculate momenta (per atom, per fragment) - magnitude only
+            atomMomenta = np.abs(_atomVelos * masses)
+            avgMomentum = np.mean(atomMomenta)
+
+            # Calculate fragment angle
+            angle = vAngle(_fragVelos)
+            if verbose:
+                print('point, fragment: {} (index {}) - {} (indices: {})'.format(
+                    key, indices[key], label, frag))
+                print('velocities: \n{}'.format(_velo))
+                print('average velocities (componentwise): {}'.format(_fragVelos))
+                print('average velocities (atomwise): {}'.format(_atomVelos))
+                print("T_i = {}".format(atomKEs))
+                print("<T> = {:.2E}".format(avgKE))
+                print("p_i: {}".format(atomMomenta))
+                print("<p>: {}".format(avgMomentum))
+                print("theta = {:.2f}".format(angle))
+                print()
+            pointAngles += [angle]
+            pointMomenta += [avgMomentum]
+            pointKE += [avgKE]
+            pointLabel += [label]
+            pointPos += [position]
+        fragAnglesByPoint[key] = pointAngles
+        fragPositionsByPoint[key] = pointPos
+        fragMomentaByPoint[key] = pointMomenta
+        fragKEByPoint[key] = pointKE
+    dfPoint = pd.DataFrame({
+        "timeIndex" : indices,
+        "fragIndices" : fragments,
+        "fragPositions": fragPositionsByPoint,
+        "fragVelos": fragVelosByPoint,
+        "fragLabels": fragLabelByPoint,
+        "angle": fragAnglesByPoint,
+        "KE": fragKEByPoint,
+        "momentum": fragMomentaByPoint
+    })
+
+    dfTraj = None
+    return dfPoint, dfTraj
+
+def getFragsTraj(traj, ArIndex = -1, exclusions = ['CF4', 'Ar', 'CH3F']):
+    """
+    Returns two lists of lists:
+    - list of lists, each list is a fragment
+    - list of labels corresponding to each fragment
+    """
+    fragIndices = []
+    fragLabels = []
+    for frame in traj:
+        frags = getFragIndices(frame, True)
+        labels = [frame[frag].symbols.get_chemical_formula() for frag in frags]
+        fragIndices += [[i for i, j in zip(frags, labels) if j not in exclusions]]
+        fragLabels += [[j for i, j in zip(frags, labels) if j not in exclusions]]
+    return fragIndices, fragLabels
+
+
+def getFragsByPoint(traj, points, ArIndex = -1, veloConversionFactor = 1/1000, exclusions = ['CF4', 'Ar', 'CH3F'], 
+        KEcutoff = 0.05, numPointstoCheck = 10, keyPoints = ["start", "maxfrag", "end"], verbose = False):
+    """
+    Produces a list of lists for each point, each parent being list of fragments and child being list of
+    atom indices
+    """
+    pointIndices = {}
+    trajVelos = np.array([i.arrays['vel'] for i in traj]) # Read velocities; shape is (T, N, 3)
+
+    # Get argon KEs over traj
+    arVelos = [i[ArIndex] for i in trajVelos]
+    arVeloTotals = [np.sqrt(np.sum(i**2)) for i in arVelos]
+    arKEs = [KE(i * veloConversionFactor) for i in arVeloTotals]
+
+    # Determine indices for each key point
+    pointIndices['start'] = 0
+    pointIndices['end'] = -1
+
+    # Check for index with maximum fragmentation post-collision
+    checkedPoints = 0
+    maxFrags = 0
+    maxFragIndex = 0
+
+    for i, arKE in enumerate(arKEs):
+        if arKE < arKEs[0] * KEcutoff: # Fragment count begins when Ar KE drops below 0.05 of starting KE
+            if checkedPoints < numPointstoCheck:
+                checkedPoints += 1
+
+                # This is kind of inefficient but we're gonna do it anyway
+                fragIndices = getFragIndices(traj[i])
+                frags = [f for f in fragIndices if
+                                   traj[i][f].symbols.get_chemical_formula() not in exclusions]
+                numFrags = len(frags)
+
+                if verbose:
+                    print('checking point ', i)
+                    print('fragment indices: ', frags)
+                    print('fragment labels: ', [traj[i][f].symbols.get_chemical_formula() for f in frags])
+                    print('number of fragments: ', numFrags)
+
+                # Stop or update
+                if numFrags < maxFrags:
+                    break # Stop searching once recombination begins happening
+                if numFrags > maxFrags:
+                    maxFragIndex = i
+                    maxFrags = numFrags
+
+    # Update maxfrag entry after checking the postcollision points for max fragmentation
+
+    pointIndices['maxfrag'] = maxFragIndex
+
+    # Check that all keyPoints have an index
+    for key in keyPoints:
+        if key not in pointIndices.keys():
+            raise ValueError("Not all keys in keyPoints have corresponding value in pointIndices")
+
+    # Obtain fragment indices
+    fragsByPoint = {}
+    for P in keyPoints:
+        pointIndex = pointIndices[P]
+        fragIndices = getFragIndices(traj[pointIndex])
+
+        fragsByPoint[P] = [f for f in fragIndices if
+                           traj[pointIndex][f].symbols.get_chemical_formula() not in exclusions]
+    if verbose:
+        print("indices considered: {}".format(pointIndices))
+        print("fragment indices:")
+        for key, item in fragsByPoint.items():
+            print(key, item)
+    return pointIndices, fragsByPoint

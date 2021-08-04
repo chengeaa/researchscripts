@@ -6,11 +6,11 @@ from ase.geometry.analysis import Analysis
 def getslab(struct):
     """
     Input: 
-        struct: structre from which we will trim unbound species (.gen file)
+        struct: structre from which we will trim unbound species (Atoms object)
     Output:
         baseslab: structure with unbound species trimmed
     """
-    adjmat = Analysis(struct).adjacency_matrix[0]
+    adjmat = Analysis(struct, bothways = True).adjacency_matrix[0]
     numnodes = adjmat.shape[0]
     g = Graph(numnodes)
     for i in range(numnodes):
@@ -21,26 +21,38 @@ def getslab(struct):
     maingraph = np.array([i for i in cc if 0 in i][0])
     return struct[[atom.index for atom in struct if atom.index in maingraph]]
 
-def getslab(struct):
+def getFragIndices(struct, check = False):
     """
     Input: 
-        struct: structre from which we will trim unbound species (.gen file)
+        struct: structure (Atoms object)
+        check: would you like to check max connectivity?
     Output:
-        baseslab: structure with unbound species trimmed
+        array of indices for fragments
     """
-    adjmat = Analysis(struct).adjacency_matrix[0]
-    numnodes = adjmat.shape[0]
+    a = Analysis(struct, bothways = True)
+    adjmat = a.adjacency_matrix[0].toarray()
+    if check:
+        maxbonds = {'Ar': 0, 'Si': 6, 'F': 1, 'N': 4, 'H': 1, 'C': 5}
+        for i, adjrow in enumerate(adjmat):
+            elem = struct[i].symbol
+            while np.sum(adjrow) > maxbonds[elem] + 1: # +1 because adjmat[i,i] = 1
+                distances = {atom.index: struct.get_distance(i, atom.index) for atom in struct if adjrow[atom.index]}
+                for j, a in enumerate(adjrow):
+                    if j in distances.keys() and distances[j] == np.max(list(distances.values())):
+                        adjrow[j] = 0
+                        adjmat[j, i] = 0 # Delete both directions of the edge
+            adjmat[i] = adjrow
+
+    numnodes = adjmat.shape[0] # Adjacency matrix is NxN, N = #atoms
     g = Graph(numnodes)
     for i in range(numnodes):
         for j in range(numnodes):
             if adjmat[i,j]:
                 g.addEdge(i,j)
     cc = g.connectedComponents()
-    maingraph = np.array([i for i in cc if 0 in i][0])
-    return struct[[atom.index for atom in struct if atom.index in maingraph]]
-# Python program to print connected
-# components in an undirected graph
-# https://www.geeksforgeeks.org/connected-components-in-an-undirected-graph/
+    fragIndices = np.array([i for i in cc if 0 not in i])
+    return fragIndices
+
 
 def getslabs(data, directory, useInputs = False):
     """
