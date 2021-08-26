@@ -22,7 +22,6 @@ from researchscripts.structure import Graph
 
 
 def main(
-    surftype, #type of surface as corresponding to keys in surfzmaxes
     datadir = "temp/", #data files, structured as datadir/output$i-$j.gen and datadir/velos$i-$j
     outputdir = "temp.new/",  #files for output
     hbondrange = 3, #offset from surface corresponding to Hbond range

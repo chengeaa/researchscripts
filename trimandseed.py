@@ -23,7 +23,6 @@ from researchscripts.structure import Graph
 def main(
     numsofar, #use the run number you're seeding for
     batch, #current batch number
-    surftype, #type of surface as corresponding to keys in surfzmaxes
     velo, # velocity of incident Ar in Å/ps
     datadir = "temp/", #data files, structured as datadir/output$i-$j.gen and datadir/velos$i-$j
     outputdir = "temp.new/", #files for output
@@ -135,15 +134,13 @@ if __name__ == "__main__":
     Takes in four arguments:
     numsofar: number of runs so far; alternatively, run number seeding for
     batch: batch number (this script is designed for 2-level batch/run structure)
-    surftype: original slab type (used for zmax ref, some slabs are taller than others)
-        if this is a number, use this as the zmax ref
     velo: velocity 
     datadir: where the input data is
     outputdir: where the output goes
     """
 
     args = sys.argv[1:]
-    if len(args) > 6:
+    if len(args) > 5:
         print(args)
-        raise Exception("No more than 6 arguments allowed")
+        raise Exception("No more than 5 arguments allowed")
     main(*args)

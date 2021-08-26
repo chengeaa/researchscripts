@@ -1,8 +1,8 @@
 from ase.neighborlist import NewPrimitiveNeighborList, natural_cutoffs
-from utils import readStructs, KE, vAngle
-from structure import Graph, getFragIndices
+from researchscripts.utils import readStructs, KE, vAngle
+from researchscripts.structure import Graph, getFragIndices
 from ase.geometry.analysis import Analysis
-from utils import readStructs
+from researchscripts.utils import readStructs
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
@@ -321,7 +321,7 @@ def getFragStats(traj, fragments, indices, verbose = False):
     dfTraj = None
     return dfPoint, dfTraj
 
-def getFragsTraj(traj, ArIndex = -1, exclusions = ['CF4', 'Ar', 'CH3F']):
+def getFragsTraj(traj, exclusions = ['CF4', 'Ar', 'CH3F']):
     """
     Returns two lists of lists:
     - list of lists, each list is a fragment
