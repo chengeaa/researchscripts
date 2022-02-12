@@ -61,6 +61,10 @@ cbonds, combos, combolists = bondAnalysis(data, focusElement = "F", bondelems = 
 #show output
 print('Group lists:')
 print(combolists)
-print("count # F shared by NSi, assuming any exist (errors if none)")
-print(len(combolists['NSi']))
+print("count # Li shared by SnBi, assuming any exist (errors if none)")
+elems = ["Bi", "Sn"]
+pairkeys = [key for key in combolists.keys() 
+    if np.all([e in key for e in elems])]
+print("pair keys:", pairkeys)
+print(len(combolists[pairkeys]))
 
