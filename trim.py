@@ -24,7 +24,7 @@ from researchscripts.structure import Graph
 def main(
     datadir = "temp/", #data files, structured as datadir/output$i-$j.gen and datadir/velos$i-$j
     outputdir = "temp.new/",  #files for output
-    hbondrange = 3, #offset from surface corresponding to Hbond range
+    hbondrange = 6, #offset from surface corresponding to Hbond range
     zmincutoff = 0.1, #somewhat arbitrary value to get rid of atoms that have gone into bulk
     output_geom_name = "output",  #prefix for output geometry files
     output_velos_name = "velos" #prefix for output velocity files
@@ -34,6 +34,8 @@ def main(
     ### Read in geometry files ###
     ##############################
 
+    hbondrange = int(hbondrange)
+    zmincutoff = float(zmincutoff)
 
     geometries = {}
     for i in os.listdir(datadir):
@@ -89,6 +91,8 @@ def main(
         removeFrag = [np.all(np.array(i) > zcutoff) or np.all(np.array(i) < zmincutoff) 
                 for i in fragZs]
         atomsToRemove = [i for g,r in zip(fragGraphs, removeFrag) if r for i in g]
+        #account for any atoms that have wrapped around through the top of the cell (lookin at you, H)
+        atomsToRemove += [a.index for a in geom if a.z > geom.cell[2,2]] 
 
         for idx in atomsToRemove:
             removedatoms[geom[idx].symbol] += 1 #tally removed atoms by species
@@ -122,7 +126,7 @@ if __name__ == "__main__":
     """
 
     args = sys.argv[1:]
-    if len(args) > 3:
+    if len(args) > 6:
         print(args)
-        raise Exception("No more than 3 arguments allowed")
+        raise Exception("No more than 6 arguments allowed")
     main(*args)
