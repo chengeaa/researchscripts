@@ -26,7 +26,7 @@ def main(
     velo, # velocity of incident Ar in Å/ps
     datadir = "temp/", #data files, structured as datadir/output$i-$j.gen and datadir/velos$i-$j
     outputdir = "temp.new/", #files for output
-    hbondrange = 3,
+    hbondrange = 6,
     zmincutoff = 0.1, #somewhat arbitrary value to get rid of atoms that have gone into bulk
     numperbatch = 17,
     numbatches = 10 
@@ -34,7 +34,12 @@ def main(
 
     numsofar = int(numsofar)
     batch = int(batch)
-    velo = int(velo)
+    velo = float(velo)
+
+    hbondrange = int(hbondrange)
+    zmincutoff = float(zmincutoff)
+    numperbatch = int(numperbatch)
+    numbatches = int(numbatches)
 
     ##############################
     ### Read in geometry files ###
@@ -101,6 +106,8 @@ def main(
         removeFrag = [np.all(np.array(i) > zcutoff) or np.all(np.array(i) < zmincutoff) 
                 for i in fragZs]
         atomsToRemove = [i for g,r in zip(fragGraphs, removeFrag) if r for i in g]
+        #account for any atoms that have wrapped around through the top of the cell (lookin at you, H)
+        atomsToRemove += [a.index for a in geom if a.z > geom.cell[2,2]] 
         for idx in atomsToRemove:
             removedatoms[geom[idx].symbol] += 1 #tally removed atoms by species
         
@@ -140,7 +147,7 @@ if __name__ == "__main__":
     """
 
     args = sys.argv[1:]
-    if len(args) > 5:
+    if len(args) > 9:
         print(args)
-        raise Exception("No more than 5 arguments allowed")
+        raise Exception("No more than 9 arguments allowed")
     main(*args)
